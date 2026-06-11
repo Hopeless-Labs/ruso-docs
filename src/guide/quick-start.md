@@ -1,82 +1,73 @@
 # Quick Start
 
-This page takes you from zero to a real scan in a couple of minutes. It assumes
-you've [installed](installation.md) the `ruso` binary.
+Ruso scans a target against a library of ready-made checks. No checks to write,
+no config to fill in — install it, point it at something you're allowed to test,
+and go. This page gets you from install to your first finding in about a minute.
 
-## 1. Write a check
+> **Scan only what you're authorized to test.** Run Ruso against your own
+> systems or targets you have explicit permission to assess. Unauthorised
+> scanning may be illegal.
 
-Save this as `redis.rsl` — it probes for an unauthenticated Redis instance:
-
-```rsl
-metadata {
-    name "Exposed Redis (no auth)"
-    description "Sends PING to Redis; an unauthenticated server replies PONG."
-    severity high
-    family "database"
-    version "1.0.0"
-}
-
-tcp redis {
-    host "{{scan_host}}"
-    port 6379
-    payload "PING\r\n"
-}
-
-send redis
-match redis.response contains "PONG"
-
-evidence redis regex 'redis_version:[0-9.]+'
-```
-
-## 2. Validate the syntax
-
-No network — just parse and compile:
+## 1. Install
 
 ```bash
-ruso validate --script redis.rsl
+cargo install --git https://github.com/Hopeless-Labs/ruso-cli.git
 ```
 
-A clean exit means the check compiles. Syntax errors point at the offending
-line.
+That's the whole setup. (Prerequisites and other methods: [Installation](installation.md).)
 
-## 3. Scan a target
+## 2. Run your first scan
 
-`scan` compiles and runs in one step. Spin up a throwaway Redis to test against:
+Point Ruso at a target and scan it against an entire **family** of community
+checks — in one command:
 
 ```bash
-docker run --rm -d -p 6379:6379 --name redis-demo redis:7-alpine
-ruso scan --script redis.rsl --target tcp://127.0.0.1:6379 -v
-docker rm -f redis-demo
+ruso scan --family web --target https://target.example.com
 ```
 
-You'll get a finding (detected) with the captured `redis_version` evidence. Point
-the same check at a password-protected Redis and it won't detect — the server
-refuses `PING` without `AUTH`.
+Ruso pulls every published `web` check from the registry, runs them against your
+target, and prints a finding for each hit — with severity and the evidence that
+proves it. The default registry is the hosted one, so there's nothing to
+configure.
 
-## 4. Compile and ship (optional)
+Other families to try: `auth`, `database`, `dns`, `network`, `tls`, `cloud`,
+`mail`.
 
-To distribute a check without its source, compile it to bytecode and run that:
+## 3. Search for a specific check
+
+Looking for a known issue? Search the registry:
 
 ```bash
-ruso compile --script redis.rsl          # → redis.rbc
-ruso exec --bytecode redis.rbc --target tcp://127.0.0.1:6379
+ruso search log4j --tag rce
+ruso search --family database --severity high
 ```
 
-The `.rbc` file is a compact, validated binary the runtime executes directly.
+Each result shows a `<namespace>/<name>` reference you can run directly.
 
-## 5. Use a shared check
-
-Instead of writing your own, pull one from the registry and scan with it:
+## 4. Run one check by name
 
 ```bash
 ruso scan --script someuser/log4shell --target https://target.example.com -v
 ```
 
-A `<namespace>/<name>` reference is fetched from the registry into your local
-cache on first use, then reused.
+A registry reference is fetched and cached on first use, then reused. `-v` shows
+the per-probe detail and the evidence behind each finding.
+
+## 5. Read the result
+
+| Verdict | Meaning |
+|---------|---------|
+| **detected** | The check matched — a finding was emitted (with evidence). |
+| **not detected** | The target didn't meet the check's conditions. |
+| **skipped** | A required port was already seen closed in this run. |
+| **error** | A precondition (`assert`) or probe failed. |
+
+Add `-v` / `-vv` for the detail behind any verdict.
 
 ## Where to go next
 
-- [Core Concepts](concepts.md) — the mental model behind checks, probes, and findings.
-- [Your First Check](../rsl/first-check.md) — a guided walk through writing RSL.
-- [Language Reference](../rsl/reference.md) — every keyword, field, and predicate.
+- **Want to write your own check?** [Your First Check](../rsl/first-check.md)
+  builds one from scratch in a few lines.
+- **Curious how it works?** [Core Concepts](concepts.md) gives you the mental
+  model in five minutes.
+- **Want to share checks?** See [Publishing & Installing](../registry/publishing.md).

@@ -1,16 +1,16 @@
 # The Ruso Book
 
-**Ruso** is a vulnerability-scanning ecosystem built around a small, purpose-built
-language. You write a *check* in the **Ruso Scripting Language (RSL)** — a few
-lines describing a probe and what a positive result looks like — point it at a
-target, and scan:
+**Ruso** is a vulnerability scanner driven by a library of small, shareable
+checks. Point it at a target and scan against community checks straight from the
+registry — no setup, no plugins to compile:
 
 ```bash
-ruso scan --script check.rsl --target https://target.example.com
+ruso scan --family web --target https://target.example.com
 ```
 
-That's the whole idea: checks are short, readable, and shareable. No plugins to
-compile, no framework to learn — just a `.rsl` file and a target.
+Need something bespoke? Write your own check in the **Ruso Scripting Language
+(RSL)** — a few readable lines describing a probe and what a positive result
+looks like. Either way, scanning for a known issue is usually a one-liner.
 
 > **Development status:** Ruso is under active development. The language,
 > bytecode format, CLI, and APIs may change without notice. Not recommended for
