@@ -3,7 +3,7 @@
 The registry is how checks are shared. It stores compiled checks under a
 `<namespace>/<name>` slug, versioned with SemVer, and lets anyone search,
 install, and run them. The hosted registry lives at
-`https://ruso.hopeless-labs.com`; you can also [self-host](self-hosting.md) one.
+`https://ruso.hopeless-labs.com`.
 
 This chapter is the *workflow*. For every flag, see the
 [CLI Reference](../cli/reference.md).
@@ -105,4 +105,4 @@ ruso scan --family web --target https://target.example.com
 
 Registry URL precedence: `--registry <url>` > `$RUSO_REGISTRY_URL` > the built-in
 default (`https://ruso.hopeless-labs.com`). Use `http://127.0.0.1:8080` for a
-local [self-hosted](self-hosting.md) backend.
+local or private registry instance.

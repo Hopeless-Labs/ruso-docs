@@ -10,7 +10,7 @@
 
 # Writing Checks (RSL)
 
-- [Your First Check](rsl/first-check.md)
+- [Write Your Own Script](rsl/first-check.md)
 - [Language Reference](rsl/reference.md)
 - [Example Checks](rsl/examples.md)
 - [Testing Your Checks](rsl/testing.md)
@@ -22,7 +22,6 @@
 # The Registry
 
 - [Publishing & Installing](registry/publishing.md)
-- [Self-Hosting](registry/self-hosting.md)
 
 # Internals & Contributing
 

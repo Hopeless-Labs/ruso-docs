@@ -21,13 +21,15 @@ looks like. Either way, scanning for a known issue is usually a one-liner.
 Ruso is intentionally **not** a monorepo. Each piece does one job and has a
 stable contract with its neighbours:
 
-| Component | Repo | What it does |
-|-----------|------|--------------|
-| **RSL** | [`ruso-script`](https://github.com/Hopeless-Labs/ruso-script) | Parses `.rsl` source and **compiles** it to bytecode |
-| **Runtime** | [`ruso-runtime`](https://github.com/Hopeless-Labs/ruso-runtime) | A small **VM** that executes the bytecode, runs probes, and emits findings |
-| **CLI** | [`ruso-cli`](https://github.com/Hopeless-Labs/ruso-cli) | The `ruso` binary — the driver you actually run |
-| **Registry** | [`ruso-backend`](https://github.com/Hopeless-Labs/ruso-backend) | Publish, install, and search shared checks |
-| **Checks** | [`ruso-labs`](https://github.com/Hopeless-Labs/ruso-labs) | A library of ready-made `.rsl` checks |
+| Component | What it does |
+|-----------|--------------|
+| **RSL** ([`ruso-script`](https://github.com/Hopeless-Labs/ruso-script)) | Parses `.rsl` source and **compiles** it to bytecode |
+| **Runtime** ([`ruso-runtime`](https://github.com/Hopeless-Labs/ruso-runtime)) | A small **VM** that executes the bytecode, runs probes, and emits findings |
+| **CLI** ([`ruso-cli`](https://github.com/Hopeless-Labs/ruso-cli)) | The `ruso` binary — the driver you actually run |
+| **Ruso registry** | The service you publish, install, and search shared checks against (hosted at `ruso.hopeless-labs.com`) |
+
+Shared **checks** live in the registry — a growing library of ready-made `.rsl`
+checks you can install and scan with, no authoring required.
 
 The flow is a short pipeline:
 

@@ -75,6 +75,6 @@ Run with `-v` (or `-vv`) to see the per-probe detail behind the verdict.
 
 ## Publishing checked work
 
-The [`ruso-labs`](https://github.com/Hopeless-Labs/ruso-labs) repository is the
-reference library of checks proven this way. Once your check passes both the
-vulnerable and safe cases, see [Publishing & Installing](../registry/publishing.md).
+Checks shared through the registry are expected to be proven this way. Once your
+check passes both the vulnerable and safe cases, see
+[Publishing & Installing](../registry/publishing.md).

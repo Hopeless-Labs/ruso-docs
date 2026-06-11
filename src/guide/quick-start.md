@@ -66,7 +66,7 @@ Add `-v` / `-vv` for the detail behind any verdict.
 
 ## Where to go next
 
-- **Want to write your own check?** [Your First Check](../rsl/first-check.md)
+- **Want to write your own check?** [Write Your Own Script](../rsl/first-check.md)
   builds one from scratch in a few lines.
 - **Curious how it works?** [Core Concepts](concepts.md) gives you the mental
   model in five minutes.

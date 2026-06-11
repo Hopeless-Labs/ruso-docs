@@ -47,7 +47,7 @@ variables.
 **Session probe** — a TCP/UDP/DNS probe with `session true`, which keeps the
 connection open across multiple `send`s and appends responses.
 
-**Registry** — the `ruso-backend` service where checks are published, searched,
+**Registry** — the Ruso registry service where checks are published, searched,
 and installed.
 
 **Namespace** — the owner segment of a check reference (`<namespace>/<name>`);

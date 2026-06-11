@@ -92,7 +92,7 @@ at publish time.
 
 ## The registry
 
-The registry (`ruso-backend`) is where checks are **published**, **searched**,
+The Ruso registry is where checks are **published**, **searched**,
 and **installed**. A check is addressed as `<namespace>/<name>[@<version-range>]`.
 Namespaces are your username; versions are SemVer. Installed checks land in the
 local cache and are reused across runs. See [The Registry](../registry/publishing.md).

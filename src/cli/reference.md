@@ -11,7 +11,7 @@ Binary name: **`ruso`**. Fifteen commands across two groups:
 | `compile` | Write hex-encoded bytecode to `<script>.rbc` (silent on success) |
 | `exec` | Run `.rbc` bytecode against targets |
 
-**Registry** (talks to [`ruso-backend`](https://github.com/Hopeless-Labs/ruso-backend)):
+**Registry** (talks to the Ruso registry):
 
 | Command | Purpose |
 |---------|---------|
@@ -51,7 +51,7 @@ this order:
 1. `--registry <URL>` flag on the command
 2. `RUSO_REGISTRY_URL` environment variable
 3. Built-in default `https://ruso.hopeless-labs.com` (the hosted registry;
-   use `http://127.0.0.1:8080` to point at a local `ruso-backend`)
+   use `http://127.0.0.1:8080` to point at a local registry instance)
 
 Credentials are stored per registry base URL in
 `$XDG_CONFIG_HOME/ruso/credentials.json` (Linux/macOS) or

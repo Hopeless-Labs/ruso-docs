@@ -1,4 +1,4 @@
-# Your First Check
+# Write Your Own Script
 
 This chapter builds a real HTTP check from scratch, one piece at a time. By the
 end you'll understand every line — and be ready to use the
