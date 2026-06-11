@@ -28,8 +28,49 @@ jobs:
           curl -sSL "https://github.com/rust-lang/mdBook/releases/download/v${MDBOOK_VERSION}/mdbook-v${MDBOOK_VERSION}-x86_64-unknown-linux-gnu.tar.gz" \
             | tar -xz -C /usr/local/bin
 
-      - name: Build
+      - name: Build the book
         run: mdbook build
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: _api
+
+      - name: Build API docs (rustdoc)
+        run: |
+          set -euo pipefail
+          mkdir -p _api && cd _api
+          git clone --depth 1 https://github.com/Hopeless-Labs/ruso-runtime.git
+          git clone --depth 1 https://github.com/Hopeless-Labs/ruso-script.git
+          # Ephemeral workspace so ruso_script ↔ ruso_runtime cross-link and
+          # share one search index. The patch redirects ruso-script's git dep
+          # to the freshly cloned sibling.
+          cat > Cargo.toml <<'EOF'
+          [workspace]
+          resolver = "2"
+          members = ["ruso-runtime", "ruso-script"]
+
+          [patch."https://github.com/Hopeless-Labs/ruso-runtime.git"]
+          ruso-runtime = { path = "ruso-runtime" }
+          EOF
+          cargo doc --no-deps
+          cd ..
+          mkdir -p book/api
+          cp -r _api/target/doc/. book/api/
+          # Landing page for /api/ (cargo doc emits no workspace root index).
+          cat > book/api/index.html <<'EOF'
+          <!doctype html>
+          <meta charset="utf-8">
+          <title>Ruso API Reference</title>
+          <h1>Ruso API Reference</h1>
+          <ul>
+            <li><a href="ruso_runtime/index.html"><code>ruso_runtime</code></a> — the bytecode VM</li>
+            <li><a href="ruso_script/index.html"><code>ruso_script</code></a> — the RSL parser &amp; compiler</li>
+          </ul>
+          EOF
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
