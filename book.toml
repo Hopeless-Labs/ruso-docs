@@ -1,0 +1,24 @@
+[book]
+title = "The Ruso Book"
+description = "Official documentation for Ruso — the vulnerability-scanning ecosystem (Ruso Scripting Language, CLI, runtime, and registry)."
+authors = ["Hopeless Labs"]
+language = "en"
+src = "src"
+
+[output.html]
+default-theme = "navy"
+preferred-dark-theme = "navy"
+git-repository-url = "https://github.com/Hopeless-Labs/ruso-docs"
+edit-url-template = "https://github.com/Hopeless-Labs/ruso-docs/edit/main/{path}"
+site-url = "https://docs.ruso.hopeless-labs.com/"
+
+[output.html.fold]
+enable = true
+level = 1
+
+[output.html.search]
+enable = true
+limit-results = 30
+
+[output.html.playground]
+runnable = false
