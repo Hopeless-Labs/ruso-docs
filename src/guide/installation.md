@@ -60,7 +60,7 @@ Ruso keeps two things on disk:
 
 | Path | Purpose |
 |------|---------|
-| `~/.ruso/scripts/<ns>/<name>/<version>.rbc` | Local install cache for registry checks. Override the root with `$RUSO_HOME`. |
+| `~/.ruso/scripts/<ns>/<name>/<version>.rbc` | Local install cache for registry scripts. Override the root with `$RUSO_HOME`. |
 | `$XDG_CONFIG_HOME/ruso/credentials.json` | Registry credentials, per registry URL (mode `0600` on Unix). |
 
-Neither is created until you install a check or log in to a registry.
+Neither is created until you install a script or log in to a registry.

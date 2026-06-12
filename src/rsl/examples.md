@@ -1,7 +1,7 @@
 # Example scripts
 
 Scripts live in [`examples/`](../examples/) in the **ruso-script** repository:
-two runnable checks per protocol (HTTP, DNS, TCP, UDP). Every example has been
+two runnable scripts per protocol (HTTP, DNS, TCP, UDP). Every example has been
 verified against a local Docker target.
 
 Install or build [ruso-cli](https://github.com/Hopeless-Labs/ruso-cli), then
@@ -19,7 +19,7 @@ Socket examples (`dns`/`tcp`/`udp`) take the host from `--target` via
 ## HTTP
 
 ### `http_status_ok.rsl`
-**Purpose:** Endpoint availability + content check.
+**Purpose:** Endpoint availability + content script.
 **Concepts:** `http` probe, `send`, `match` on `status` / `body` / `header`, `evidence`.
 **Run:** `ruso scan --script examples/http_status_ok.rsl --target http://127.0.0.1:8080`
 

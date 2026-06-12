@@ -1,6 +1,6 @@
 # Write Your Own Script
 
-This chapter builds a real HTTP check from scratch, one piece at a time. By the
+This chapter builds a real HTTP script from scratch, one piece at a time. By the
 end you'll understand every line — and be ready to use the
 [Language Reference](reference.md) as a lookup table.
 
@@ -9,9 +9,9 @@ header** (an information-disclosure finding).
 
 ## 1. Start with metadata
 
-Every check opens with a `metadata { }` block. It describes the *finding* — not
-the logic. Only `name` (or `report`) is strictly required for a check that emits
-findings; the rest makes the result useful and the check publishable.
+Every script opens with a `metadata { }` block. It describes the *finding* — not
+the logic. Only `name` (or `report`) is strictly required for a script that emits
+findings; the rest makes the result useful and the script publishable.
 
 ```rsl
 metadata {
@@ -64,7 +64,7 @@ match home.status == 200
 match home.header("Server") regex '[0-9]+\.[0-9]+'
 ```
 
-If either fails, the chain latches false and the check won't detect.
+If either fails, the chain latches false and the script won't detect.
 
 ## 5. Capture proof
 
@@ -75,7 +75,7 @@ A finding is far more useful with **evidence** — the exact string that proves 
 evidence home regex 'Server:[^\r\n]+'
 ```
 
-## The complete check
+## The complete script
 
 ```rsl
 metadata {
@@ -121,5 +121,5 @@ A server that returns `Server: nginx/1.25.3` detects; one that sends a bare
 - **Other transports** — swap `http` for `tcp`/`udp`/`dns`. See
   [Socket probes](reference.md#socket-probes-dns--tcp--udp).
 - **Multiple steps** — send several probes, use `if`, `for`, `extract`/`save`.
-- **Prove it works** — [Testing Your Checks](testing.md) shows how to verify a
-  check against both vulnerable *and* safe targets before you trust it.
+- **Prove it works** — [Testing Your Scripts](testing.md) shows how to verify a
+  script against both vulnerable *and* safe targets before you trust it.

@@ -1,15 +1,15 @@
 # Glossary
 
-**Check** — one `.rsl` file describing a single security question and what a
+**Script** — one `.rsl` file describing a single security question and what a
 positive result looks like.
 
-**RSL (Ruso Scripting Language)** — the language checks are written in. Source
+**RSL (Ruso Scripting Language)** — the language scripts are written in. Source
 files use the `.rsl` extension.
 
-**Bytecode (`.rbc`)** — the compact, validated binary a check compiles to. The
+**Bytecode (`.rbc`)** — the compact, validated binary a script compiles to. The
 runtime executes bytecode; the registry stores and ships it.
 
-**Probe** — a network request defined in a check (`http`, `tcp`, `udp`, `dns`)
+**Probe** — a network request defined in a script (`http`, `tcp`, `udp`, `dns`)
 that is not performed until `send`.
 
 **Send** — the statement that performs a probe's request and stores the response
@@ -24,7 +24,7 @@ false and later `match`/`evidence` short-circuit.
 **Assert** — like `match`, but a failure **aborts the run** with an error instead
 of latching the chain false. Used for hard preconditions.
 
-**Finding** — the result emitted when a check finishes with the match chain true
+**Finding** — the result emitted when a script finishes with the match chain true
 and a `name`/`report` set: metadata plus captured evidence.
 
 **Detected** — the CLI verdict that a finding was emitted.
@@ -38,23 +38,23 @@ CWE/CVE, CVSS, family, version, …).
 **Family** — a single curated structural category (`web`, `database`, `tls`, …);
 the unit for `scan --family`.
 
-**Tags** — many free-form discovery labels per check.
+**Tags** — many free-form discovery labels per script.
 
-**Target (`--target`)** — what a check runs against. HTTP probes use it as the
+**Target (`--target`)** — what a script runs against. HTTP probes use it as the
 base URL; socket probes read it via the `scan_host`/`scan_port`/`scan_url`
 variables.
 
 **Session probe** — a TCP/UDP/DNS probe with `session true`, which keeps the
 connection open across multiple `send`s and appends responses.
 
-**Registry** — the Ruso registry service where checks are published, searched,
+**Registry** — the Ruso registry service where scripts are published, searched,
 and installed.
 
-**Namespace** — the owner segment of a check reference (`<namespace>/<name>`);
+**Namespace** — the owner segment of a script reference (`<namespace>/<name>`);
 your username.
 
 **Reference (registry ref)** — `<namespace>/<name>[@<semver-range>]`, how a
-published check is addressed.
+published script is addressed.
 
 **PAT (Personal Access Token)** — a longer-lived, scoped credential for
 authenticating to the registry without the web flow.
@@ -63,4 +63,4 @@ authenticating to the registry without the web flow.
 existing installs keep working.
 
 **Install cache** — `~/.ruso/scripts/<ns>/<name>/<version>.rbc`, where fetched
-checks are stored and reused (override the root with `$RUSO_HOME`).
+scripts are stored and reused (override the root with `$RUSO_HOME`).

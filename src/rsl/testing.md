@@ -1,11 +1,11 @@
-# Testing Your Checks
+# Testing Your Scripts
 
-A check is only worth publishing if you've proven it does two things:
+A script is only worth publishing if you've proven it does two things:
 
 1. **Detects** the vulnerable / exposed condition it targets.
 2. **Stays quiet** against a safe, patched, or hardened target.
 
-A check that only ever fires (or never fires) is worse than no check — it
+A script that only ever fires (or never fires) is worse than no script — it
 erodes trust in every result. Prove both directions before you ship.
 
 ## Use disposable Docker targets
@@ -14,7 +14,7 @@ The cleanest way to get a known-vulnerable *and* a known-safe target is a
 throwaway container. Don't test against a host `python -m http.server` or random
 internet hosts — you want a target whose state you fully control.
 
-### Example: the unauthenticated-Redis check
+### Example: the unauthenticated-Redis script
 
 **Vulnerable target** — Redis with no password:
 
@@ -35,7 +35,7 @@ ruso scan --script redis.rsl --target tcp://127.0.0.1:6379 -v
 docker rm -f redis-safe
 ```
 
-If the check detects in the first case and stays quiet in the second, it's
+If the script detects in the first case and stays quiet in the second, it's
 doing real work — not just pattern-matching the presence of the service.
 
 ### Tips
@@ -44,7 +44,7 @@ doing real work — not just pattern-matching the presence of the service.
   are fast.
 - **Clean up** containers (and pulled images, if you won't reuse them) after
   testing.
-- For HTTP checks, many products ship a vulnerable demo image; otherwise toggle
+- For HTTP scripts, many products ship a vulnerable demo image; otherwise toggle
   the relevant setting (auth on/off, header present/absent) to create the
   "safe" variant from the same image.
 
@@ -53,9 +53,9 @@ doing real work — not just pattern-matching the presence of the service.
 While iterating, lean on the cheap commands first:
 
 ```bash
-ruso validate --script check.rsl        # syntax + compile, no network
-ruso scan --script check.rsl --target <vuln>  -v   # should detect
-ruso scan --script check.rsl --target <safe>  -v   # should NOT detect
+ruso validate --script script.rsl        # syntax + compile, no network
+ruso scan --script script.rsl --target <vuln>  -v   # should detect
+ruso scan --script script.rsl --target <safe>  -v   # should NOT detect
 ```
 
 `validate` catches every parse/compile error without touching the network, so
@@ -73,8 +73,8 @@ run it on every edit. Only move to `scan` once it compiles.
 
 Run with `-v` (or `-vv`) to see the per-probe detail behind the verdict.
 
-## Publishing checked work
+## Publishing scripted work
 
-Checks shared through the registry are expected to be proven this way. Once your
-check passes both the vulnerable and safe cases, see
+Scripts shared through the registry are expected to be proven this way. Once your
+script passes both the vulnerable and safe cases, see
 [Publishing & Installing](../registry/publishing.md).

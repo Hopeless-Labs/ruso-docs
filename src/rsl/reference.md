@@ -6,12 +6,12 @@ Keywords are **case-insensitive** (`HTTP`, `http`, `Send` are equivalent).
 
 ## File structure
 
-Typical check layout:
+Typical script layout:
 
 ```rsl
 metadata {
-    name "Check title"
-    description "What this check does"
+    name "Script title"
+    description "What this script does"
     impact "Risk if positive"
     severity high
     author "team"
@@ -346,7 +346,7 @@ written as awkward second counts.
 4. **`detected` in CLI** — requires a finding (`name`/`report` + matchers passed + not `stop`).
 5. **Port cache (30s)** — `skipped` is per script run when a required port was already seen closed in this `ruso` process.
 6. **`session true`** — socket responses accumulate across `send` in a loop.
-7. **Nesting depth** — blocks/objects may nest at most 64 levels deep; deeper scripts are rejected at parse time (a guard against parser stack overflow). Real checks never approach this.
+7. **Nesting depth** — blocks/objects may nest at most 64 levels deep; deeper scripts are rejected at parse time (a guard against parser stack overflow). Real scripts never approach this.
 
 ## Grammar source
 

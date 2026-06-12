@@ -1,14 +1,14 @@
 # The Ruso Book
 
 **Ruso** is a vulnerability scanner driven by a library of small, shareable
-checks. Point it at a target and scan against community checks straight from the
+scripts. Point it at a target and scan against community scripts straight from the
 registry — no setup, no plugins to compile:
 
 ```bash
 ruso scan --family web --target https://target.example.com
 ```
 
-Need something bespoke? Write your own check in the **Ruso Scripting Language
+Need something bespoke? Write your own script in the **Ruso Scripting Language
 (RSL)** — a few readable lines describing a probe and what a positive result
 looks like. Either way, scanning for a known issue is usually a one-liner.
 
@@ -26,15 +26,15 @@ stable contract with its neighbours:
 | **RSL** ([`ruso-script`](https://github.com/Hopeless-Labs/ruso-script)) | Parses `.rsl` source and **compiles** it to bytecode |
 | **Runtime** ([`ruso-runtime`](https://github.com/Hopeless-Labs/ruso-runtime)) | A small **VM** that executes the bytecode, runs probes, and emits findings |
 | **CLI** ([`ruso-cli`](https://github.com/Hopeless-Labs/ruso-cli)) | The `ruso` binary — the driver you actually run |
-| **Ruso registry** | The service you publish, install, and search shared checks against (hosted at `ruso.hopeless-labs.com`) |
+| **Ruso registry** | The service you publish, install, and search shared scripts against (hosted at `ruso.hopeless-labs.com`) |
 
-Shared **checks** live in the registry — a growing library of ready-made `.rsl`
-checks you can install and scan with, no authoring required.
+Shared **scripts** live in the registry — a growing library of ready-made `.rsl`
+scripts you can install and scan with, no authoring required.
 
 The flow is a short pipeline:
 
 ```text
-check.rsl ──[ruso-script: parse + compile]──▶ bytecode (.rbc)
+script.rsl ──[ruso-script: parse + compile]──▶ bytecode (.rbc)
                                                   │
                                   [ruso-runtime: VM executes]
                                                   │
@@ -42,16 +42,16 @@ check.rsl ──[ruso-script: parse + compile]──▶ bytecode (.rbc)
                                     probes ⇄ target   →   finding
 ```
 
-A source check (`.rsl`) compiles to **bytecode** (`.rbc`) — a compact, validated
-binary that the runtime executes. You can run a check in one step (`scan`
+A source script (`.rsl`) compiles to **bytecode** (`.rbc`) — a compact, validated
+binary that the runtime executes. You can run a script in one step (`scan`
 compiles and runs), or split the steps (`compile` then `exec`) and ship the
 `.rbc` without the source.
 
 ## Who this book is for
 
-- **Want to run or write checks?** Start with the [User Guide](guide/installation.md)
-  and [Writing Checks](rsl/first-check.md).
-- **Want to share checks?** See [The Registry](registry/publishing.md).
+- **Want to run or write scripts?** Start with the [User Guide](guide/installation.md)
+  and [Writing Scripts](rsl/first-check.md).
+- **Want to share scripts?** See [The Registry](registry/publishing.md).
 - **Want to hack on Ruso itself?** Jump to [Internals & Contributing](internals/architecture.md).
 
 ## A taste of RSL
@@ -78,4 +78,4 @@ evidence redis regex 'redis_version:[0-9.]+'
 
 Eight lines: declare what you're looking for, send a probe, decide what a hit
 looks like, and capture proof. The next chapters take you from install to your
-first real check.
+first real script.

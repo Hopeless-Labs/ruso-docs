@@ -3,11 +3,11 @@
 A handful of ideas explain almost everything in Ruso. Once these click, the
 [Language Reference](../rsl/reference.md) reads like a lookup table.
 
-## Checks
+## Scripts
 
-A **check** is one `.rsl` file. It describes a single security question — "is
+A **script** is one `.rsl` file. It describes a single security question — "is
 this Redis exposed?", "does this server leak its version?" — and what a *yes*
-looks like. Checks are deliberately small: declare metadata, define probes, send
+looks like. Scripts are deliberately small: declare metadata, define probes, send
 them, and decide whether the responses constitute a finding.
 
 ## Probes
@@ -43,7 +43,7 @@ match home.body contains "admin"
 
 All the `match` statements in a run form a single **chain** of AND-ed
 conditions. The moment one fails, the chain latches **false** and later
-`match`/`evidence` statements short-circuit — so a check "detects" only when
+`match`/`evidence` statements short-circuit — so a script "detects" only when
 *every* match held.
 
 `assert` is the strict cousin: instead of latching the chain false, a failed
@@ -53,7 +53,7 @@ be 200 before we go on"); use `match` for the actual finding logic. See
 
 ## Findings and `detected`
 
-When a check finishes with the chain still true — and it has a `name` or
+When a script finishes with the chain still true — and it has a `name` or
 `report` — the runtime emits a **finding**: the metadata plus any captured
 **evidence**. The CLI reports this as `detected`. `stop` ends a run with *no*
 finding; `exit` ends it and emits the finding if the chain held.
@@ -68,7 +68,7 @@ and ships, and what `exec` runs directly. See
 
 ## Targets and `--target`
 
-The CLI's `--target` sets the *base* a check runs against. For **HTTP** probes it
+The CLI's `--target` sets the *base* a script runs against. For **HTTP** probes it
 becomes the base URL (`path` is appended). For **socket** probes it populates the
 `scan_host` / `scan_port` / `scan_url` variables you interpolate into the probe:
 
@@ -83,7 +83,7 @@ This is the single most common footgun — HTTP reads the base URL, sockets read
 
 Metadata carries two kinds of labels:
 
-- **`tags`** — many per check, free-form discovery labels (`"rce"`, `"log4j"`).
+- **`tags`** — many per script, free-form discovery labels (`"rce"`, `"log4j"`).
 - **`family`** — a *single* structural category (`web`, `database`, `tls`, …),
   the unit for "scan everything in this group" (`ruso scan --family web`).
 
@@ -92,7 +92,7 @@ at publish time.
 
 ## The registry
 
-The Ruso registry is where checks are **published**, **searched**,
-and **installed**. A check is addressed as `<namespace>/<name>[@<version-range>]`.
-Namespaces are your username; versions are SemVer. Installed checks land in the
+The Ruso registry is where scripts are **published**, **searched**,
+and **installed**. A script is addressed as `<namespace>/<name>[@<version-range>]`.
+Namespaces are your username; versions are SemVer. Installed scripts land in the
 local cache and are reused across runs. See [The Registry](../registry/publishing.md).

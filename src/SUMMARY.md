@@ -8,12 +8,12 @@
 - [Quick Start](guide/quick-start.md)
 - [Core Concepts](guide/concepts.md)
 
-# Writing Checks (RSL)
+# Writing Scripts (RSL)
 
 - [Write Your Own Script](rsl/first-check.md)
 - [Language Reference](rsl/reference.md)
-- [Example Checks](rsl/examples.md)
-- [Testing Your Checks](rsl/testing.md)
+- [Example Scripts](rsl/examples.md)
+- [Testing Your Scripts](rsl/testing.md)
 
 # Command-Line Interface
 

@@ -5,14 +5,14 @@ detail, see the [Language Reference](../rsl/reference.md).
 
 ## "not a .rsl script file"
 
-`--script` points at a file without the `.rsl` extension. Source checks must be
+`--script` points at a file without the `.rsl` extension. Source scripts must be
 `.rsl`; compiled bytecode must be `.rbc`. Rename the file or use the right flag
 (`--bytecode` for `.rbc`).
 
-## The check never detects (or always detects)
+## The script never detects (or always detects)
 
 This is the single most important thing to rule out — test against **both** a
-vulnerable and a safe target ([Testing Your Checks](../rsl/testing.md)). A check
+vulnerable and a safe target ([Testing Your Scripts](../rsl/testing.md)). A script
 that fires unconditionally usually has a `match` that's too loose (e.g. matching
 the mere presence of a service rather than the vulnerable behaviour).
 

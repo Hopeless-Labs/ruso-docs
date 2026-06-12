@@ -76,7 +76,7 @@ Refs are accepted wherever the CLI takes a script/bytecode path:
 Resolution rule for `scan` / `exec`:
 
 1. If the argument exists on the filesystem → treat as a path.
-   (Local files always win, so a directory named `myorg/check` still
+   (Local files always win, so a directory named `myorg/script` still
    works.)
 2. Else if it parses as a registry ref → resolve through the install
    cache (`$RUSO_HOME` or `$HOME/.ruso/scripts/<ns>/<name>/<version>.rbc`),
@@ -86,8 +86,8 @@ Resolution rule for `scan` / `exec`:
 ## `validate`
 
 ```bash
-ruso validate --script check.rsl
-ruso validate --script ./checks/
+ruso validate --script script.rsl
+ruso validate --script ./scripts/
 ```
 
 - File must be `.rsl`; directory collects `*.rsl` recursively.
@@ -97,11 +97,11 @@ ruso validate --script ./checks/
 ## `compile`
 
 ```bash
-ruso compile --script check.rsl
-ruso compile --script ./checks/
+ruso compile --script script.rsl
+ruso compile --script ./scripts/
 ```
 
-- Writes **lowercase hex** of the RUSO v1 bytecode to `check.rbc` beside `check.rsl` (ASCII text, not raw binary).
+- Writes **lowercase hex** of the RUSO v1 bytecode to `script.rbc` beside `script.rsl` (ASCII text, not raw binary).
 - No stdout on success.
 - `exec` decodes hex from `.rbc` before running (legacy raw-binary `.rbc` with `RUSO` header still works).
 - While the runtime is `0.1.0-dev` the v1 wire format may change between
@@ -111,7 +111,7 @@ ruso compile --script ./checks/
 ## `exec`
 
 ```bash
-ruso exec --bytecode check.rbc --target https://example.com
+ruso exec --bytecode script.rbc --target https://example.com
 ruso exec --bytecode ./built/ --target targets.txt -v
 # Registry ref — auto-fetches if not cached.
 ruso exec --bytecode myorg/log4shell@^0.2 --target https://lab.local
@@ -154,8 +154,8 @@ Endpoints:
 ## `scan`
 
 ```bash
-ruso scan --script check.rsl --target https://example.com
-ruso scan --script ./checks/ --target targets.txt --output json --report out.json
+ruso scan --script script.rsl --target https://example.com
+ruso scan --script ./scripts/ --target targets.txt --output json --report out.json
 # Registry ref — auto-fetches if not cached.
 ruso scan --script myorg/log4shell@^0.2 --target https://lab.local -v
 ```
@@ -220,8 +220,8 @@ stored.
 ## `publish`
 
 ```bash
-ruso publish ./mycheck.rsl
-ruso publish ./mycheck.rsl --visibility private
+ruso publish ./myscript.rsl
+ruso publish ./myscript.rsl --visibility private
 ```
 
 | Flag | Effect |
@@ -320,8 +320,8 @@ count + yank flag.
 ## `yank` / `unyank`
 
 ```bash
-ruso yank someuser/check@1.4.2 --reason "false-positive rate too high"
-ruso unyank someuser/check@1.4.2
+ruso yank someuser/script@1.4.2 --reason "false-positive rate too high"
+ruso unyank someuser/script@1.4.2
 ```
 
 Owner-only. Idempotent — yanking an already-yanked version (or
@@ -341,9 +341,9 @@ version — the registry just stops recommending them in search +
 ## `edit`
 
 ```bash
-ruso edit someuser/check --description "Now detects CVE-2024-XYZ too"
-ruso edit someuser/check --visibility private
-ruso edit someuser/check --description "" --visibility public   # combo
+ruso edit someuser/script --description "Now detects CVE-2024-XYZ too"
+ruso edit someuser/script --visibility private
+ruso edit someuser/script --description "" --visibility public   # combo
 ```
 
 Owner-only. Updates fields on the script (not on a version — version
@@ -524,18 +524,18 @@ downstream tooling. The CSV header now includes `skipped` and
 
 ```bash
 # Local development loop.
-ruso validate --script mycheck.rsl
-ruso compile --script mycheck.rsl          # → mycheck.rbc
-ruso exec --bytecode mycheck.rbc --target https://lab.local -v
+ruso validate --script myscript.rsl
+ruso compile --script myscript.rsl          # → myscript.rbc
+ruso exec --bytecode myscript.rbc --target https://lab.local -v
 
 # Or one step from source:
-ruso scan --script mycheck.rsl --target https://lab.local -v
+ruso scan --script myscript.rsl --target https://lab.local -v
 
-# Publish a finished check and run someone else's:
+# Publish a finished script and run someone else's:
 echo "$RUSO_PAT" | ruso login --registry https://registry.example.com
-ruso publish ./mycheck.rsl --visibility public
-ruso install someone/another-check@^1
-ruso scan --script someone/another-check --target https://lab.local -v
+ruso publish ./myscript.rsl --visibility public
+ruso install someone/another-script@^1
+ruso scan --script someone/another-script --target https://lab.local -v
 ```
 
 ## Exit codes
