@@ -56,6 +56,10 @@ jobs:
           [patch."https://github.com/Hopeless-Labs/ruso-runtime.git"]
           ruso-runtime = { path = "ruso-runtime" }
           EOF
+          # Seed the workspace lockfile from ruso-script (a superset of both
+          # crates' dependencies) so a fresh resolve can't pick a newer, broken
+          # transitive dep (e.g. time vs cookie). Pinned versions are honoured.
+          cp ruso-script/Cargo.lock Cargo.lock
           cargo doc --no-deps
           cd ..
           mkdir -p book/api
