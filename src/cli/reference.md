@@ -446,7 +446,7 @@ and a duration footer:
 ┌─────────────┬──────────┬────────┬─────────┬───────┐
 │ target      │ detected │ failed │ skipped │ clean │
 ├─────────────┼──────────┼────────┼─────────┼───────┤
-│ protergo.id │        0 │     48 │       0 │     0 │
+│ target.test │        0 │     48 │       0 │     0 │
 └─────────────┴──────────┴────────┴─────────┴───────┘
 scan duration 1.4s · 48 runs across 1 target
 ```
