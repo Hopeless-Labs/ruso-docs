@@ -31,6 +31,7 @@
 - [Bytecode Format](internals/bytecode.md)
 - [The Runtime VM](internals/runtime.md)
 - [Extending Ruso](internals/extending.md)
+- [Contributing](internals/contributing.md)
 - [API Reference](internals/api.md)
 
 # Appendix
