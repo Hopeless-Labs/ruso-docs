@@ -18,6 +18,7 @@
 # Command-Line Interface
 
 - [CLI Reference](cli/reference.md)
+- [Output & Reporting](cli/output.md)
 
 # The Registry
 

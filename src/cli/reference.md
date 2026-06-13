@@ -133,8 +133,7 @@ ruso exec --bytecode myorg/log4shell@^0.2 --target https://lab.local
 | `--concurrency` | Parallel (target × script) runs (default `16`) |
 | `--max-per-host` | Cap concurrent in-flight scans against a single host (default `0` = disabled; only `--concurrency` applies). Prevents a high `-c` from piling many connections onto one sensitive target while still allowing wide parallelism across distinct hosts. |
 | `--rps` | Cap on how often a new script run may start, scripts per second (default `0` = disabled). Coarse safety cap at the orchestrator: a running script can still send many probes. |
-| `--output` | `human`, `json`, `csv` |
-| `--report` | Required for json/csv |
+| `--report` | Write a JSON or CSV report to this file; the format is chosen by the `.json` / `.csv` extension. Findings always also print to the terminal. See [Output & Reporting](output.md). |
 
 > **Migration note:** the previous `--verify-tls` flag (a positive opt-in
 > for verification, disabled by default) is gone. Verification is now the
@@ -155,7 +154,7 @@ Endpoints:
 
 ```bash
 ruso scan --script script.rsl --target https://example.com
-ruso scan --script ./scripts/ --target targets.txt --output json --report out.json
+ruso scan --script ./scripts/ --target targets.txt --report out.json
 # Registry ref — auto-fetches if not cached.
 ruso scan --script myorg/log4shell@^0.2 --target https://lab.local -v
 ```
@@ -421,81 +420,14 @@ Store this token now — it won't be shown again:
 
 Idempotent — already-revoked tokens still return success.
 
-## Report output (`--output json` / `csv` / `human`)
+## Output & reporting
 
-**Human output is a one line per finding:** `[SEVERITY] <target> <title>`
-(e.g. `[CRITICAL] 127.0.0.1 Redis exposed without authentication`). The
-`[SEVERITY]` tag is colour-coded by level (critical = magenta, high = red,
-medium = yellow, low = cyan, info = grey), the target is bold, and tags are
-padded to one column so targets line up. Findings **stream as they are found**
-during the scan (a progress spinner sits below them on a TTY), not in a single
-dump at the end. The full metadata is intentionally kept out of the console —
-use `--output json` / `csv` with `--report <path>` for the complete record. In
-`-v` mode each run instead logs a status line as it completes: `[OK]` (green),
-`[SKIP] … (reason)` (yellow), or `[ERROR] … (msg)` (red).
+Findings stream to the terminal as they're found, and a multi-run scan ends
+with a per-target summary table. Passing `--report <file.json|file.csv>`
+*additionally* writes a machine-readable report (format from the extension).
 
-Scanning is **pipelined**: a bare-host `--target`'s scheme (http/https) is
-resolved lazily, once per target, as part of scanning — so a large target file
-starts producing results immediately instead of waiting for every target to be
-probed up front.
-
-For a multi-run scan the human output ends with a **per-target summary table**
-and a duration footer:
-
-```text
-┌─────────────┬──────────┬────────┬─────────┬───────┐
-│ target      │ detected │ failed │ skipped │ clean │
-├─────────────┼──────────┼────────┼─────────┼───────┤
-│ target.test │        0 │     48 │       0 │     0 │
-└─────────────┴──────────┴────────┴─────────┴───────┘
-scan duration 1.4s · 48 runs across 1 target
-```
-
-Each count is coloured by bucket when non-zero (detected/failed red, skipped
-yellow, clean green) and dimmed at zero.
-
-Colour is applied only when stdout is a terminal; piped or redirected output
-(and any run with the `NO_COLOR` environment variable set) stays plain, so
-escape codes never pollute logs or `grep`.
-
-Every interactive invocation also prints a **startup banner** (the "ruso"
-wordmark plus version / GitHub / registry links) to stderr — shown only when
-stderr is a terminal, so piped/CI output and the report on stdout are
-unaffected. `NO_COLOR` drops its colour like everywhere else.
-
-The **json/csv report carries every metadata field** from the script
-`metadata { … }` block. Besides `name`, `description`, `impact`, `severity`,
-`author`, and `evidence`:
-
-| Field | Source in `.rsl` |
-|-------|-------------------|
-| `cve` | `cve ["…", "…"]` list (JSON array; CSV joined with ` \| `) |
-| `cwe` | `cwe ["…"]` list |
-| `references` | `references ["…", "…"]` list (URLs, advisories, etc.) |
-| `cvss` | Repeatable `cvss "…"` lines (CVSS vector, e.g. `CVSS:3.1/…`) |
-| `cvss_score` | Repeatable `cvss_score 9.8` lines (numeric literal, stored as string in reports) |
-| `mitigation` | Single `mitigation "…"` line (remediation guidance; declaring it twice is a compile error) |
-| `version` | `version "X.Y.Z"` (script SemVer) |
-| `family` | `family "web"` (curated category) |
-| `tags` | `tags ["…", "…"]` free-form labels |
-
-Empty lists / absent fields are omitted from JSON (`skip_serializing_if`).
-
-### `skip_reason` vs `error`
-
-JSON and CSV reports carry **two** separate channels for non-finding
-outcomes:
-
-- `skip_reason` is set when a run did not execute because a required
-  port was closed (`port 80 closed`, etc.). `skipped` is `true` in the
-  same row.
-- `error` is set only for genuine failures (parse failure, IO error,
-  runtime `fail` opcode, SSRF guard, budget exceeded).
-
-Earlier revisions wrote the skip reason into `error`, which made
-"intentional skip" indistinguishable from "the run blew up" in
-downstream tooling. The CSV header now includes `skipped` and
-`skip_reason` columns.
+The console behaviour, the JSON/CSV schema (grouped by target), and CI usage
+are documented in **[Output & Reporting](output.md)**.
 
 ## Scan target and socket checks
 
