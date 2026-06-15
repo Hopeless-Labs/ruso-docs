@@ -222,7 +222,7 @@ Written in order after the header (`MAGIC` + `VERSION`):
 
 Each string list uses the same `write_strings` / `read_strings` helper as the string pool (count, then length-prefixed UTF-8 per entry). Repeatable metadata lines in `.rsl` append to these lists at compile time.
 
-`version` and `family` are written at the tail of the metadata block via `opt_str` (a `0`/`1` presence byte then the string). They were appended in place during `0.1.0-dev` without bumping the version byte — older `.rbc` that predate them simply won't have the trailing bytes, so always recompile after pulling.
+`version` and `family` are written at the tail of the metadata block via `opt_str` (a `0`/`1` presence byte then the string). The metadata layout was finalised for 1.0.0 (this is the v1 format); any later field add/remove bumps the `VERSION` byte rather than changing v1 in place.
 
 ## Pools and IDs
 
@@ -263,9 +263,10 @@ let executor = Executor::from_bytecode(config, program)?;
 let result = executor.run().await?;
 ```
 
-Compilers **must** target `VERSION` 1. While `0.1.0-dev` the v1 wire format
-may change between commits without a version bump — recompile stored `.rbc`
-files after pulling.
+Compilers **must** target `VERSION` 1 — the stable 1.0.0 wire format. Any
+future format change bumps `VERSION`, so a mismatched `.rbc` is rejected with
+`BadVersion` rather than silently misread; recompile / re-`install` after a
+runtime upgrade to stay current.
 
 ## Design note: why not more opcodes?
 

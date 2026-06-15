@@ -25,6 +25,7 @@ Binary name: **`ruso`**. Fifteen commands across two groups:
 | `yank` / `unyank` | Pull / restore a published version (owner, idempotent) |
 | `edit` | Update description / visibility of a script you own |
 | `pat list/create/revoke` | Manage personal access tokens |
+| `admin delete` | Hard-delete a version or whole script (admin only, `--yes`) |
 
 Plus: `scan` accepts `--script <ns>/<name>[@<range>]` (single registry ref) **or** `--family <name>` (every installed/published script in a curated family); `exec` accepts the same ref form in `--bytecode`. Refs resolve through the local cache, auto-installing on miss.
 
@@ -104,9 +105,10 @@ ruso compile --script ./scripts/
 - Writes **lowercase hex** of the RUSO v1 bytecode to `script.rbc` beside `script.rsl` (ASCII text, not raw binary).
 - No stdout on success.
 - `exec` decodes hex from `.rbc` before running (legacy raw-binary `.rbc` with `RUSO` header still works).
-- While the runtime is `0.1.0-dev` the v1 wire format may change between
-  commits without a version bump — recompile your `.rbc` files after each
-  upgrade.
+- The v1 wire format is the stable 1.0.0 format. Any future change bumps the
+  bytecode `VERSION` byte (so a mismatched `.rbc` fails with a clear
+  `unsupported bytecode version` error instead of misreading). Re-`install` /
+  recompile after upgrading the runtime to stay on the current format.
 
 ## `exec`
 
