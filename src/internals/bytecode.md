@@ -210,7 +210,7 @@ Written in order after the header (`MAGIC` + `VERSION`):
 | `impact` | optional string |
 | `severity` | `u8` tag (0=absent, else 1–5 for low…critical) |
 | `author` | optional string |
-| `report_title` | optional string (`report` in RSL) |
+| `report_title` | optional string (reserved; no longer settable from RSL — the `report` field was removed from the language) |
 | `cve` | `u32` count + strings |
 | `cwe` | `u32` count + strings |
 | `references` | `u32` count + strings |

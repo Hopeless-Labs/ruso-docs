@@ -50,7 +50,6 @@ All finding metadata lives in a single `metadata { … }` block at the top of th
 | `impact` | `impact "…"` |
 | `severity` | `severity low \| medium \| high \| critical \| info` |
 | `author` | `author "ruso-lab"` |
-| `report` | `report "Report title override"` |
 | `cve` | `cve ["CVE-2024-1234", "CVE-2024-5678"]` |
 | `cwe` | `cwe ["CWE-79"]` |
 | `references` | `references ["https://…", "https://…"]` |
@@ -274,7 +273,7 @@ save home as cached
 
 ## Evidence
 
-Attach proof strings to the finding (only when the match chain is still true). Requires `name` or `report` metadata if the script uses `match` / `evidence` (compile-time check).
+Attach proof strings to the finding (only when the match chain is still true). Requires `name` metadata if the script uses `match` / `evidence` (compile-time check).
 
 ```rsl
 evidence home.body
@@ -291,7 +290,7 @@ evidence redis_ping regex 'PONG'
 
 `<probe>` must already have been `send` in this run. Regex uses Rust syntax; mismatch fails the run.
 
-Evidence is attached when the script finishes with a finding (`name` or `report` set, match chain true, and not stopped — see flow control).
+Evidence is attached when the script finishes with a finding (`name` set, match chain true, and not stopped — see flow control).
 
 ## Retry and sleep
 
@@ -315,11 +314,11 @@ retry, so the script's count is the sole authority for that probe.
 | Statement | Effect |
 |-----------|--------|
 | `stop` | Stop script; **no finding** emitted (even if matchers passed) |
-| `exit` | Stop script; emit finding if matchers passed and `name`/`report` set |
+| `exit` | Stop script; emit finding if matchers passed and `name` set |
 | `fail` | Abort with error |
 | `continue` | Skip to the next iteration of the current loop |
 
-Scripts with `match` / `evidence` must include `name "…"` or `report "…"` or compilation fails.
+Scripts with `match` / `evidence` must include `name "…"` or compilation fails.
 
 ## Duration literals
 
@@ -343,7 +342,7 @@ written as awkward second counts.
 1. **`--target` vs socket `host`** — HTTP uses `--target` as base URL; TCP/UDP/DNS wire use `host` in the script (prefer `host "{{scan_host}}"`).
 2. **DNS resolver vs wire** — different match fields (`.answer` vs `.response`).
 3. **`evidence home.body` on a TCP probe** — use `.response` or `evidence home regex`.
-4. **`detected` in CLI** — requires a finding (`name`/`report` + matchers passed + not `stop`).
+4. **`detected` in CLI** — requires a finding (`name` + matchers passed + not `stop`).
 5. **Port cache (30s)** — `skipped` is per script run when a required port was already seen closed in this `ruso` process.
 6. **`session true`** — socket responses accumulate across `send` in a loop.
 7. **Nesting depth** — blocks/objects may nest at most 64 levels deep; deeper scripts are rejected at parse time (a guard against parser stack overflow). Real scripts never approach this.

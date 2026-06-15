@@ -25,7 +25,7 @@ false and later `match`/`evidence` short-circuit.
 of latching the chain false. Used for hard preconditions.
 
 **Finding** — the result emitted when a script finishes with the match chain true
-and a `name`/`report` set: metadata plus captured evidence.
+and a `name` set: metadata plus captured evidence.
 
 **Detected** — the CLI verdict that a finding was emitted.
 

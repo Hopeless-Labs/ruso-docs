@@ -450,7 +450,7 @@ are documented in **[Output & Reporting](output.md)**.
   cause, not just a generic line — e.g. `http error: error sending request for
   url (…): client error (Connect): invalid peer certificate: UnknownIssuer`
   rather than a bare `error sending request`.
-- `ruso validate` / `ruso compile` fail if the script has `match` or `evidence` but no `name` or `report` metadata.
+- `ruso validate` / `ruso compile` fail if the script has `match` or `evidence` but no `name` metadata.
 
 ## Workflow
 

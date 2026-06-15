@@ -71,7 +71,7 @@ patch else_pc = code.len();
 |--------|----------------|
 | `grammar.pest` | Syntax |
 | `parser/mod.rs` | `build_statement` dispatch |
-| `parser/metadata.rs` | name, description, impact, severity, author, report, cve, cwe, references, cvss, cvss_score, mitigation, tags, version, family |
+| `parser/metadata.rs` | name, description, impact, severity, author, cve, cwe, references, cvss, cvss_score, mitigation, tags, version, family |
 | `parser/probes.rs` | `http` block items |
 | `parser/socket.rs` | `dns` / `tcp` / `udp` shared builder |
 | `parser/match_expr.rs` | qualified matchers, groups |

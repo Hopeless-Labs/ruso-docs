@@ -10,7 +10,7 @@ header** (an information-disclosure finding).
 ## 1. Start with metadata
 
 Every script opens with a `metadata { }` block. It describes the *finding* — not
-the logic. Only `name` (or `report`) is strictly required for a script that emits
+the logic. Only `name` is strictly required for a script that emits
 findings; the rest makes the result useful and the script publishable.
 
 ```rsl

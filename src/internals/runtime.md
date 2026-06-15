@@ -32,7 +32,7 @@ When a check matches, `finalize_finding()` builds one `Finding` from metadata pl
 
 | Field | Source |
 |-------|--------|
-| `name` | `name`, or `report` title if `name` omitted |
+| `name` | `name` |
 | `description`, `impact`, `author` | Optional metadata strings |
 | `severity` | Metadata `severity`, default `info` |
 | `cve`, `cwe`, `references`, `cvss`, `cvss_score` | Repeatable RSL lines → `Vec<String>` |

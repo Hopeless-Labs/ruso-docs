@@ -51,7 +51,8 @@ publishing, make sure the script passes both the vulnerable and safe cases — s
 [Testing Your Scripts](../rsl/testing.md).
 
 > **Tip:** the slug comes from the metadata `name` (lowercased, hyphenated, max
-> 39 chars). Keep `name` short and use `report` for a longer human title.
+> 39 chars, truncated if longer). Keep `name` short and descriptive — it is also
+> the finding title.
 
 ## Finding scripts
 

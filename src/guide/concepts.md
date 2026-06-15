@@ -53,8 +53,8 @@ be 200 before we go on"); use `match` for the actual finding logic. See
 
 ## Findings and `detected`
 
-When a script finishes with the chain still true — and it has a `name` or
-`report` — the runtime emits a **finding**: the metadata plus any captured
+When a script finishes with the chain still true — and it has a `name` — the
+runtime emits a **finding**: the metadata plus any captured
 **evidence**. The CLI reports this as `detected`. `stop` ends a run with *no*
 finding; `exit` ends it and emits the finding if the chain held.
 
