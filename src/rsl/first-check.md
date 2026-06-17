@@ -72,7 +72,7 @@ A finding is far more useful with **evidence** — the exact string that proves 
 `evidence` only attaches while the chain is still true:
 
 ```rsl
-evidence home regex 'Server:[^\r\n]+'
+evidence home.header "Server"
 ```
 
 ## The complete script
@@ -103,7 +103,7 @@ send home
 match home.status == 200
 match home.header("Server") regex '[0-9]+\.[0-9]+'
 
-evidence home regex 'Server:[^\r\n]+'
+evidence home.header "Server"
 ```
 
 ## Run it

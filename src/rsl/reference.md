@@ -34,7 +34,7 @@ tcp svc { … }
 send home
 match home.status == 200
 
-evidence home regex 'secret'
+evidence home.body regex 'secret'
 ```
 
 Comments start with `#`.
@@ -275,20 +275,30 @@ save home as cached
 
 Attach proof strings to the finding (only when the match chain is still true). Requires `name` metadata if the script uses `match` / `evidence` (compile-time check).
 
+Every evidence rule names an **explicit source** — `.body`, `.response`, or
+`.header "<name>"`. There is no source-less `evidence <probe> regex '…'` form: a
+bare regex used to silently run against the body, which mis-fired when the proof
+lived in a header. An optional trailing `regex '…'` extracts capture group 1 (or
+the whole match) from the chosen source; without it the whole (truncated) source
+is taken.
+
 ```rsl
-evidence home.body
-evidence home.response
-evidence home regex 'PASSWORD='
-evidence redis_ping regex 'PONG'
+evidence home.body                          # whole body (max 500 chars)
+evidence home.body regex 'PASSWORD='        # match from the body
+evidence redis_ping.response                # socket / DNS / HTTP payload
+evidence redis_ping.response regex 'PONG'   # match from that payload
+evidence home.header "X-Powered-By"         # whole header value
+evidence home.header "Server" regex 'nginx/[\d.]+'
 ```
 
 | Form | Meaning |
 |------|---------|
-| `evidence <probe>.body` | **HTTP only** — response body (max 500 chars) |
-| `evidence <probe>.response` | Full response text: HTTP body, joined DNS answers, or socket data (max 500 chars) |
-| `evidence <probe> regex '…'` | Regex on **that probe only**; capture group 1 or full match |
+| `evidence <probe>.body [regex '…']` | **HTTP only** — response body (max 500 chars) |
+| `evidence <probe>.response [regex '…']` | Full response payload: HTTP body, joined DNS answers, or socket data (max 500 chars) |
+| `evidence <probe>.header "<name>" [regex '…']` | **HTTP only** — value of that response header (case-insensitive; errors if the header is absent) |
 
-`<probe>` must already have been `send` in this run. Regex uses Rust syntax; mismatch fails the run.
+`<probe>` must already have been `send` in this run. Regex uses Rust syntax; a
+mismatch (or a missing header) fails the run.
 
 Evidence is attached when the script finishes with a finding (`name` set, match chain true, and not stopped — see flow control).
 
@@ -341,7 +351,7 @@ written as awkward second counts.
 
 1. **`--target` vs socket `host`** — HTTP uses `--target` as base URL; TCP/UDP/DNS wire use `host` in the script (prefer `host "{{scan_host}}"`).
 2. **DNS resolver vs wire** — different match fields (`.answer` vs `.response`).
-3. **`evidence home.body` on a TCP probe** — use `.response` or `evidence home regex`.
+3. **`evidence home.body` on a TCP probe** — `.body` / `.header` are HTTP-only; use `.response` for socket/DNS payloads.
 4. **`detected` in CLI** — requires a finding (`name` + matchers passed + not `stop`).
 5. **Port cache (30s)** — `skipped` is per script run when a required port was already seen closed in this `ruso` process.
 6. **`session true`** — socket responses accumulate across `send` in a loop.

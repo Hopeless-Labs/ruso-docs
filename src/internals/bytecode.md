@@ -233,13 +233,15 @@ All `u32` IDs index into compile-time pools in `BytecodeProgram`:
 - Matchers — full `QualifiedMatch` structs
 - Extracts / Evidence — parallel structures
 
-Evidence pool entries (`EvidenceKind`):
+Evidence pool entries (`EvidenceKind`). Every entry names an explicit source and
+carries an **optional** regex (`opt_str`: a 1-byte present flag, then the string
+when present):
 
 | Tag | Form | Wire |
 |-----|------|------|
-| 0 | `body <probe>` | probe name string |
-| 1 | `regex <probe> <pattern>` | probe name + pattern string |
-| 2 | `response <probe>` | probe name string |
+| 0 | `<probe>.body [regex …]` | probe name string + opt regex |
+| 1 | `<probe>.response [regex …]` | probe name string + opt regex |
+| 2 | `<probe>.header "<name>" [regex …]` | probe name string + header name string + opt regex |
 
 The executor resolves IDs at runtime via `program.strings[id]`, etc.
 

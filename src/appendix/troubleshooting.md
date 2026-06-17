@@ -38,11 +38,11 @@ matches. See [DNS modes](../rsl/reference.md#dns-modes).
 
 ## `evidence home.body` errors on a TCP probe
 
-`.body` is HTTP-only. For sockets use `.response`, or a probe-scoped regex:
+`.body` (and `.header`) are HTTP-only. For sockets use `.response`:
 
 ```rsl
 evidence home.response
-evidence home regex 'PONG'
+evidence home.response regex 'PONG'
 ```
 
 ## Certificate verification failed

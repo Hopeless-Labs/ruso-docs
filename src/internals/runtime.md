@@ -37,7 +37,7 @@ When a check matches, `finalize_finding()` builds one `Finding` from metadata pl
 | `severity` | Metadata `severity`, default `info` |
 | `cve`, `cwe`, `references`, `cvss`, `cvss_score` | Repeatable RSL lines → `Vec<String>` |
 | `mitigation` | Single free-text line → `Option<String>` (declaring it twice is a compile error) |
-| `evidence` | `evidence <probe>.body` or `evidence <probe> regex '…'` on that probe only |
+| `evidence` | Source-explicit: `evidence <probe>.body` / `.response` / `.header "<name>"`, each with an optional trailing `regex '…'` |
 
 ## Port reachability cache
 

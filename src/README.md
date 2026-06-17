@@ -73,7 +73,7 @@ tcp redis {
 send redis
 match redis.response contains "PONG"
 
-evidence redis regex 'redis_version:[0-9.]+'
+evidence redis.response regex 'redis_version:[0-9.]+'
 ```
 
 Eight lines: declare what you're looking for, send a probe, decide what a hit

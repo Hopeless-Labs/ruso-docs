@@ -89,7 +89,7 @@ match redis_ping.response contains "PONG"
 match redis_ping.response not_contains "NOAUTH"
 match redis_ping.response not_contains "ERR"
 
-evidence redis_ping regex 'PONG'
+evidence redis_ping.response regex 'PONG'
 ```
 
 Two things make this a *good* check rather than a noisy one: socket responses
@@ -123,7 +123,7 @@ send wire_a
 # The response echoes the question section, so the queried labels appear verbatim.
 match wire_a.response contains "ruso"
 
-evidence wire_a regex 'ruso'
+evidence wire_a.response regex 'ruso'
 ```
 
 > `dns_wire_txt.rsl` is the same shape with a TXT query — handy because TXT
