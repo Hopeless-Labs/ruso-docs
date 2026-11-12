@@ -14,35 +14,37 @@ crates.io, you install from source with Cargo.
 Install the `ruso` binary straight from the repository:
 
 ```bash
-cargo install --git https://github.com/Hopeless-Labs/ruso-cli.git
+cargo install --git https://github.com/Hopeless-Labs/ruso.git ruso-cli
 ```
 
-Cargo resolves the `ruso-runtime` and `ruso-script` dependencies automatically.
-The binary lands in `~/.cargo/bin/ruso` (make sure that's on your `PATH`).
+`ruso-cli` is the package name; `ruso` is the binary it installs. Cargo builds
+the `ruso-runtime` and `ruso-script` crates out of the same workspace. The
+binary lands in `~/.cargo/bin/ruso` (make sure that's on your `PATH`).
 
 ## Build from a checkout
 
-If you want to hack on the CLI, clone it and build:
+If you want to hack on Ruso, clone the workspace and build:
 
 ```bash
-git clone https://github.com/Hopeless-Labs/ruso-cli.git
-cd ruso-cli
+git clone https://github.com/Hopeless-Labs/ruso.git
+cd ruso
 cargo build --release
 # binary at ./target/release/ruso
 ```
 
-To work against local checkouts of the runtime and language crates, clone them
-as siblings — the `paths` override in `.cargo/config.toml` picks them up
-automatically:
+All three crates are in that one checkout:
 
 ```text
-parent/
-├── ruso-cli/
-├── ruso-runtime/
-└── ruso-script/
+ruso/
+└── crates/
+    ├── ruso-cli/
+    ├── ruso-runtime/
+    └── ruso-script/
 ```
 
-When the siblings are absent, Cargo falls back to the git dependencies.
+A change to the runtime or the compiler is picked up by the CLI immediately —
+they are path dependencies within the workspace, so there is nothing to clone
+as a sibling and no override to configure.
 
 ## Verify
 

@@ -1,17 +1,19 @@
 # Contributing
 
-Ruso is split across small single-purpose repositories. Most contributions
-touch one of the three open crates:
+Most contributions touch one of the three open crates, all of which live in the
+[`ruso`](https://github.com/Hopeless-Labs/ruso) workspace:
 
-| Repo | What lives there |
-|------|------------------|
-| [`ruso-script`](https://github.com/Hopeless-Labs/ruso-script) | RSL grammar, parser, and the compiler to bytecode |
-| [`ruso-runtime`](https://github.com/Hopeless-Labs/ruso-runtime) | the bytecode VM, probes, matchers, findings |
-| [`ruso-cli`](https://github.com/Hopeless-Labs/ruso-cli) | the `ruso` binary, scan orchestration, reporting |
-| [`ruso-docs`](https://github.com/Hopeless-Labs/ruso-docs) | this book |
+| Crate | What lives there |
+|-------|------------------|
+| `crates/ruso-script` | RSL grammar, parser, and the compiler to bytecode |
+| `crates/ruso-runtime` | the bytecode VM, probes, matchers, findings |
+| `crates/ruso-cli` | the `ruso` binary, scan orchestration, reporting |
 
-See [Architecture](architecture.md) for how they fit together, and the
-[multi-repo dependency graph](extending.md#multi-repo-dependency-graph).
+This book is its own repository,
+[`ruso-docs`](https://github.com/Hopeless-Labs/ruso-docs).
+
+See [Architecture](architecture.md) for how the crates fit together, and the
+[dependency graph](extending.md#dependency-graph).
 
 ## Where a change belongs
 
@@ -30,38 +32,50 @@ A change that crosses the bytecode boundary may need a `VERSION` bump — see
 
 ## Local setup
 
-Clone the crates you're working on as **siblings**:
-
-```text
-parent/
-├── ruso-cli/
-├── ruso-runtime/
-└── ruso-script/
-```
-
-`ruso-cli`'s `.cargo/config.toml` has a `paths` override that picks up sibling
-`ruso-runtime` / `ruso-script` checkouts automatically, so a change in one is
-seen by the others without publishing. When the siblings are absent, Cargo
-falls back to the `git` dependencies pinned on `main`.
+Clone the workspace once; it holds all three crates:
 
 ```bash
-cargo build
-cargo run -- scan --script ../ruso-script/examples/http_status_ok.rsl --target https://example.com
+git clone https://github.com/Hopeless-Labs/ruso.git
+cd ruso
+```
+
+```text
+ruso/
+└── crates/
+    ├── ruso-cli/
+    ├── ruso-runtime/
+    └── ruso-script/
+```
+
+They are path dependencies on each other, so a change in one is seen by the
+others on the next build — nothing to publish, patch, or override.
+
+```bash
+cargo build --workspace
+cargo run -p ruso-cli -- scan \
+  --script crates/ruso-script/examples/http_status_ok.rsl \
+  --target https://example.com
 ```
 
 ## The quality gate
 
-Each crate must stay green on:
+The workspace must stay green on:
 
 ```bash
-cargo fmt --all -- --check     # formatting
-cargo clippy --all-targets     # lints (treat warnings as things to fix)
-cargo test                     # unit + integration tests
+cargo fmt --all -- --check
+cargo clippy --workspace --all-targets --all-features -- -D warnings
+cargo test --workspace
 ```
 
-Run these in every crate you touch before opening a PR. New behaviour should
-come with a test — the runtime in particular favours small, network-free
-regression tests (build a `BytecodeProgram` and assert on the result).
+Run them workspace-wide, not just in the crate you touched — a change in the
+runtime can break the CLI's tests. New behaviour should come with a test; the
+runtime in particular favours small, network-free regression tests (build a
+`BytecodeProgram` and assert on the result).
+
+Every public item in `ruso-runtime` and `ruso-script` carries a `///` doc
+comment, and CI builds the docs with `-D missing_docs`, so a new `pub` type,
+field, variant, or function without one fails the build. The rustdoc you write
+is what readers see at [/api](/api/index.html).
 
 ## Documentation
 

@@ -18,14 +18,15 @@ looks like. Either way, scanning for a known issue is usually a one-liner.
 
 ## How it fits together
 
-Ruso is intentionally **not** a monorepo. Each piece does one job and has a
-stable contract with its neighbours:
+Ruso is three crates, each doing one job behind a stable contract with its
+neighbours. They live in one workspace at
+[`Hopeless-Labs/ruso`](https://github.com/Hopeless-Labs/ruso):
 
 | Component | What it does |
 |-----------|--------------|
-| **RSL** ([`ruso-script`](https://github.com/Hopeless-Labs/ruso-script)) | Parses `.rsl` source and **compiles** it to bytecode |
-| **Runtime** ([`ruso-runtime`](https://github.com/Hopeless-Labs/ruso-runtime)) | A small **VM** that executes the bytecode, runs probes, and emits findings |
-| **CLI** ([`ruso-cli`](https://github.com/Hopeless-Labs/ruso-cli)) | The `ruso` binary — the driver you actually run |
+| **RSL** (`ruso-script`) | Parses `.rsl` source and **compiles** it to bytecode |
+| **Runtime** (`ruso-runtime`) | A small **VM** that executes the bytecode, runs probes, and emits findings |
+| **CLI** (`ruso-cli`) | The `ruso` binary — the driver you actually run |
 | **Ruso registry** | The service you publish, install, and search shared scripts against (hosted at `ruso.hopeless-labs.com`) |
 
 Shared **scripts** live in the registry — a growing library of ready-made `.rsl`

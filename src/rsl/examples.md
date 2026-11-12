@@ -1,6 +1,6 @@
 # Example Scripts
 
-Eight runnable scripts ship in [`examples/`](https://github.com/Hopeless-Labs/ruso-script/tree/main/examples)
+Eight runnable scripts ship in [`crates/ruso-script/examples/`](https://github.com/Hopeless-Labs/ruso/tree/main/crates/ruso-script/examples)
 in the **ruso-script** repository — two per protocol (HTTP, DNS, TCP, UDP),
 each verified against a local Docker target. This chapter walks through one of
 each, annotated; the rest follow the same shapes.

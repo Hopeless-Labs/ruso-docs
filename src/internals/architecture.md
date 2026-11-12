@@ -98,17 +98,16 @@ Pipeline: `parse` → `build_program_spec` → `compile`.
 - Wires `ExecutorConfig` (base URL, timeout, TLS verify, proxy) from flags.
 - Discovers `.rsl` files and target lists for batch scans.
 
-## Repositories (not a monorepo)
+## The workspace
 
-Ruso ships as **three independent Git repositories** under [Hopeless-Labs](https://github.com/Hopeless-Labs):
+The three crates live in one Cargo workspace at
+[Hopeless-Labs/ruso](https://github.com/Hopeless-Labs/ruso):
 
-| Repository | Role |
-|------------|------|
-| [ruso-runtime](https://github.com/Hopeless-Labs/ruso-runtime) | VM, bytecode wire format, network I/O (this repo) |
-| [ruso-script](https://github.com/Hopeless-Labs/ruso-script) | Pest grammar, compiler, `examples/*.rsl` |
-| [ruso-cli](https://github.com/Hopeless-Labs/ruso-cli) | `ruso` binary |
-
-A local parent folder (e.g. `Hopeless-Labs/` with sibling clones) is only for convenience on your machine. **It is not a git repository** and does not contain canonical documentation.
+| Crate | Role |
+|-------|------|
+| `crates/ruso-runtime` | VM, bytecode wire format, network I/O |
+| `crates/ruso-script` | Pest grammar, compiler, `examples/*.rsl` |
+| `crates/ruso-cli` | `ruso` binary |
 
 Dependency direction:
 
@@ -116,25 +115,31 @@ Dependency direction:
 ruso-cli → ruso-script → ruso-runtime
 ```
 
-Published `Cargo.toml` files use **git dependencies** on `main` (see [Extending](extending.md)).
+They depend on each other by path, so a change in the runtime is compiled
+against the CLI on the next `cargo build` with nothing to configure. The three
+share one version number and are released together. Outside consumers point a
+`git` dependency at the workspace (see [Extending](extending.md)).
 
-### Layout in this repo (`ruso-runtime`)
+### Layout
 
 ```text
-ruso-runtime/
-├── docs/              ← developer documentation
-├── src/
-│   ├── contract.rs    # matchers, severity, …
-│   ├── opcode.rs      # opcode IDs + module docs
-│   └── runtime/       # executor, http, socket, session, binary, …
-└── Cargo.toml
+ruso/
+├── Cargo.toml               # workspace: members, shared deps, shared metadata
+└── crates/
+    ├── ruso-runtime/
+    │   └── src/
+    │       ├── contract.rs  # matchers, severity, …
+    │       ├── opcode.rs    # opcode IDs + module docs
+    │       └── runtime/     # executor, http, socket, session, binary, …
+    ├── ruso-script/
+    │   ├── src/script/      # grammar.pest, parser, ast
+    │   └── examples/        # runnable *.rsl checks
+    └── ruso-cli/
+        └── src/cli/         # args, orchestration, registry client, reporting
 ```
 
-Related documentation in other repos:
-
-- RSL syntax — [ruso-script `docs/RSL_REFERENCE.md`](https://github.com/Hopeless-Labs/ruso-script/blob/main/docs/RSL_REFERENCE.md)
-- Example scripts — [ruso-script `docs/EXAMPLES.md`](https://github.com/Hopeless-Labs/ruso-script/blob/main/docs/EXAMPLES.md)
-- CLI — [ruso-cli `docs/CLI.md`](https://github.com/Hopeless-Labs/ruso-cli/blob/main/docs/CLI.md)
+This book is the canonical documentation; the crates carry only rustdoc, which
+is published at [/api](/api/index.html).
 
 ## Generic socket model
 

@@ -99,11 +99,11 @@ HTTP stays separate from `SocketProbeSpec` intentionally.
 
 ## Contract sharing
 
-Types in `ruso-runtime/src/contract.rs` are shared with the compiler via `ruso_script::ast` re-exports. Changing matchers affects **both** crates—publish runtime first, then bump script dependency.
+Types in `crates/ruso-runtime/src/contract.rs` are shared with the compiler via `ruso_script::ast` re-exports. Changing matchers affects **both** crates, and because they are path dependencies in one workspace, both are rebuilt and tested together in a single commit—there is no publish-then-bump dance.
 
 ## Testing checklist
 
-- [ ] `cargo build` all three crates  
+- [ ] `cargo build --workspace`  
 - [ ] `cargo test -p ruso-script` (parser)  
 - [ ] `cargo test -p ruso-runtime` (unit tests)  
 - [ ] `ruso validate` on affected examples  
@@ -119,22 +119,22 @@ Types in `ruso-runtime/src/contract.rs` are shared with the compiler via `ruso_s
 | Raw SQL in scripts | Not applicable—keep I/O in runtime |
 | Breaking `VERSION` without bump | Explicit migration notes |
 
-## Multi-repo dependency graph
+## Dependency graph
 
 ```text
 ruso-cli → ruso-script → ruso-runtime
 ```
 
-Each crate is its own Git repository. Published `Cargo.toml` files use **git dependencies** on `main`:
+All three are members of one Cargo workspace and depend on each other by path, so working on all three at once needs no sibling clones, no `[patch]` table, and no path edits you have to remember to revert.
+
+An outside crate depends on the libraries with a **git dependency** on `main`. Both packages come out of the same workspace, so both lines carry the same URL:
 
 ```toml
-ruso-runtime = { git = "https://github.com/Hopeless-Labs/ruso-runtime.git", branch = "main" }
-ruso-script = { git = "https://github.com/Hopeless-Labs/ruso-script.git", branch = "main" }
+ruso-runtime = { git = "https://github.com/Hopeless-Labs/ruso.git", branch = "main" }
+ruso-script = { git = "https://github.com/Hopeless-Labs/ruso.git", branch = "main" }
 ```
 
-For local work on all three at once, clone them as siblings and temporarily use `path = "../ruso-*"` in `Cargo.toml`, or add a `[patch]` table in the crate you are building.
-
-When publishing to crates.io later, semver the runtime contract (`VERSION`, public types) independently from RSL.
+The crates share one version number and are released together. When publishing to crates.io later, a change to the runtime contract (`VERSION`, public types) still needs its own semver thought even though the version bumps in lockstep.
 
 ## Future directions (not implemented)
 

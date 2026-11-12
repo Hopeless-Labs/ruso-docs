@@ -11,7 +11,7 @@ and go. This page gets you from install to your first finding in about a minute.
 ## 1. Install
 
 ```bash
-cargo install --git https://github.com/Hopeless-Labs/ruso-cli.git
+cargo install --git https://github.com/Hopeless-Labs/ruso.git ruso-cli
 ```
 
 That's the whole setup. (Prerequisites and other methods: [Installation](installation.md).)

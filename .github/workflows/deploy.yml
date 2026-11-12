@@ -42,25 +42,12 @@ jobs:
       - name: Build API docs (rustdoc)
         run: |
           set -euo pipefail
-          mkdir -p _api && cd _api
-          git clone --depth 1 https://github.com/Hopeless-Labs/ruso-runtime.git
-          git clone --depth 1 https://github.com/Hopeless-Labs/ruso-script.git
-          # Ephemeral workspace so ruso_script ↔ ruso_runtime cross-link and
-          # share one search index. The patch redirects ruso-script's git dep
-          # to the freshly cloned sibling.
-          cat > Cargo.toml <<'EOF'
-          [workspace]
-          resolver = "2"
-          members = ["ruso-runtime", "ruso-script"]
-
-          [patch."https://github.com/Hopeless-Labs/ruso-runtime.git"]
-          ruso-runtime = { path = "ruso-runtime" }
-          EOF
-          # Seed the workspace lockfile from ruso-script (a superset of both
-          # crates' dependencies) so a fresh resolve can't pick a newer, broken
-          # transitive dep (e.g. time vs cookie). Pinned versions are honoured.
-          cp ruso-script/Cargo.lock Cargo.lock
-          cargo doc --no-deps
+          # The scanner is one workspace, so the two library crates cross-link
+          # and share a search index with no ephemeral workspace or [patch] of
+          # our own, and the committed lockfile pins every transitive dep.
+          git clone --depth 1 https://github.com/Hopeless-Labs/ruso.git _api
+          cd _api
+          cargo doc --no-deps -p ruso-runtime -p ruso-script --locked
           cd ..
           mkdir -p book/api
           cp -r _api/target/doc/. book/api/
