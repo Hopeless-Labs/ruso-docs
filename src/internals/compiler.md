@@ -71,7 +71,7 @@ patch else_pc = code.len();
 |--------|----------------|
 | `grammar.pest` | Syntax |
 | `parser/mod.rs` | `build_statement` dispatch |
-| `parser/metadata.rs` | name, description, impact, severity, author, cve, cwe, references, cvss, cvss_score, mitigation, tags, version, family |
+| `parser/metadata.rs` | name, description, impact, severity, author, cve, cwe, references, cvss, cvss_score, mitigation, tags, version, family, confidence |
 | `parser/probes.rs` | `http` block items |
 | `parser/socket.rs` | `dns` / `tcp` / `udp` shared builder |
 | `parser/match_expr.rs` | qualified matchers, groups |
@@ -99,7 +99,7 @@ brace and keyword nesting.
 3. Copy in `spec_build::socket_spec`.  
 4. Extend `SocketProbeSpec` in runtime + `write_socket_probe` / `read_socket_probe`.  
 5. Implement behavior in `session.rs` / `executor.rs`.  
-6. Document in `RSL_REFERENCE.md` and bump `VERSION` if wire format changes.
+6. Document in `RSL_REFERENCE.md` and recompile stored `.rbc` files if the wire format changes (`VERSION` is not bumped during development).
 
 ### Adding a statement
 

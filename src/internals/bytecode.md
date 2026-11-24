@@ -16,18 +16,17 @@ The header carries a one-byte `VERSION` (currently **1**). The decoder accepts
 `BytecodeError::BadVersion { found, supported }` ("unsupported bytecode version
 N (this build reads version M)") — never a cryptic mid-decode `Corrupt` error.
 
-**Any change to the wire format must bump `VERSION`.** Early-development
-revisions evolved the v1 layout *in place* without bumping (folding changes back
-into v1), which is why a stale `.rbc` could fail to decode with an opaque "string
-length exceeds buffer" instead of a clean version error. That era is over: now
-that bytecode is cached locally and distributed via the registry, a format
-change is a version bump.
+**While Ruso is in development, `VERSION` stays at 1 — even when the wire
+format changes.** The v1 layout evolves *in place*. The cost is that a stale
+`.rbc` compiled by an older build is not rejected with a clean version error:
+it fails mid-decode with an opaque `Corrupt` error (for example "string length
+exceeds buffer"). The fix is always the same — recompile it.
 
-> A `VERSION` bump is a **coordinated** change: the registry must deploy the new
-> runtime and serve (re-compile) `VERSION`-N bytecode, otherwise clients on the
-> new version reject everything the registry still serves as old. The local
-> install cache self-heals (an undecodable entry is re-fetched), so once the
-> registry serves the new version, clients converge automatically.
+> A layout change is still a **coordinated** change: the registry must deploy
+> the new runtime and re-compile the bytecode it serves, otherwise clients on
+> the new build cannot decode what the registry still serves. The local install
+> cache self-heals (an undecodable entry is re-fetched), so once the registry
+> serves recompiled bytecode, clients converge automatically.
 
 Removing an opcode is *not* a format change as long as the remaining opcode
 numbers are stable and no valid program used the removed one — those byte
@@ -219,10 +218,11 @@ Written in order after the header (`MAGIC` + `VERSION`):
 | `tags` | `u32` count + strings (discovery labels) |
 | `version` | optional UTF-8 string (SemVer, required at publish) |
 | `family` | optional UTF-8 string (single curated category) |
+| `confidence` | `u8` presence byte (0=absent, 1=present), then a `u8` tag: 0=tentative, 1=firm, 2=certain |
 
 Each string list uses the same `write_strings` / `read_strings` helper as the string pool (count, then length-prefixed UTF-8 per entry). Repeatable metadata lines in `.rsl` append to these lists at compile time.
 
-`version` and `family` are written at the tail of the metadata block via `opt_str` (a `0`/`1` presence byte then the string). The metadata layout was finalised for 1.0.0 (this is the v1 format); any later field add/remove bumps the `VERSION` byte rather than changing v1 in place.
+`version` and `family` are written at the tail of the metadata block via `opt_str` (a `0`/`1` presence byte then the string). `confidence` follows them as the last field of the block. Adding it changed the v1 layout in place (no `VERSION` bump — see [Versioning policy](#versioning-policy)), so bytecode compiled before it has to be recompiled.
 
 ## Pools and IDs
 
@@ -265,9 +265,8 @@ let executor = Executor::from_bytecode(config, program)?;
 let result = executor.run().await?;
 ```
 
-Compilers **must** target `VERSION` 1 — the stable 1.0.0 wire format. Any
-future format change bumps `VERSION`, so a mismatched `.rbc` is rejected with
-`BadVersion` rather than silently misread; recompile / re-`install` after a
+Compilers **must** target `VERSION` 1. The byte does not change during
+development even when the layout does, so recompile / re-`install` after a
 runtime upgrade to stay current.
 
 ## Design note: why not more opcodes?

@@ -27,7 +27,8 @@ Use the [Extending Ruso](extending.md) decision tree. In short:
   the compiler to emit it in `ruso-script`.
 - **CLI flags, output, orchestration?** `ruso-cli`.
 
-A change that crosses the bytecode boundary may need a `VERSION` bump — see
+A change that crosses the bytecode boundary changes the wire format in place
+(no `VERSION` bump during development) and means recompiling stored bytecode — see
 [Bytecode Format](bytecode.md#versioning-policy).
 
 ## Local setup

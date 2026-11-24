@@ -105,10 +105,9 @@ ruso compile --script ./scripts/
 - Writes **lowercase hex** of the RUSO v1 bytecode to `script.rbc` beside `script.rsl` (ASCII text, not raw binary).
 - No stdout on success.
 - `exec` decodes hex from `.rbc` before running (legacy raw-binary `.rbc` with `RUSO` header still works).
-- The v1 wire format is the stable 1.0.0 format. Any future change bumps the
-  bytecode `VERSION` byte (so a mismatched `.rbc` fails with a clear
-  `unsupported bytecode version` error instead of misreading). Re-`install` /
-  recompile after upgrading the runtime to stay on the current format.
+- Ruso is still in development: the bytecode `VERSION` byte stays at `1` even
+  when the wire format changes. An `.rbc` compiled by an older build may
+  therefore fail to decode — recompile (or re-`install`) after upgrading.
 
 ## `exec`
 
@@ -136,6 +135,7 @@ ruso exec --bytecode myorg/log4shell@^0.2 --target https://lab.local
 | `--max-per-host` | Cap concurrent in-flight scans against a single host (default `0` = disabled; only `--concurrency` applies). Prevents a high `-c` from piling many connections onto one sensitive target while still allowing wide parallelism across distinct hosts. |
 | `--rps` | Cap on how often a new script run may start, scripts per second (default `0` = disabled). Coarse safety cap at the orchestrator: a running script can still send many probes. |
 | `--report` | Write a JSON or CSV report to this file; the format is chosen by the `.json` / `.csv` extension. Findings always also print to the terminal. See [Output & Reporting](output.md). |
+| `--min-confidence <tentative\|firm\|certain>` | Only run scripts whose metadata declares at least this [`confidence`](../rsl/reference.md#metadata). Scripts below the level — and scripts that declare **no** `confidence` — are skipped before any probe is sent; a `[WARNING]` line says how many. Off by default (everything runs). |
 
 > **Migration note:** the previous `--verify-tls` flag (a positive opt-in
 > for verification, disabled by default) is gone. Verification is now the
@@ -161,7 +161,7 @@ ruso scan --script ./scripts/ --target targets.txt --report out.json
 ruso scan --script myorg/log4shell@^0.2 --target https://lab.local -v
 ```
 
-Same target/timeout/TLS/report/port-cache flags as `exec`, but runs `.rsl` source directly (no `.rbc` file). Each local script is parsed and compiled once, then bytecode is reused for every target. Registry-ref inputs skip the compile step — they are served as already-compiled bytecode from the cache and go through the same decode-and-run path as `exec`.
+Same target/timeout/TLS/report/`--min-confidence`/port-cache flags as `exec`, but runs `.rsl` source directly (no `.rbc` file). Each local script is parsed and compiled once, then bytecode is reused for every target. Registry-ref inputs skip the compile step — they are served as already-compiled bytecode from the cache and go through the same decode-and-run path as `exec`.
 
 `--script` also accepts a `--registry <URL>` override for ref resolution.
 

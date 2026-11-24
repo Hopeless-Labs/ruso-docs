@@ -43,7 +43,7 @@ Example: a new `tags` list on checks.
 | 6 | `report.rs` / `disasm.rs` — `Finding` + listing |
 | 7 | `docs/RSL_REFERENCE.md`, `BYTECODE.md`, `RUNTIME.md` |
 | 8 | `ruso-cli` `report.rs` if exposed in scan output |
-| 9 | Recompile all `.rbc` files; bump `VERSION` only if probe or instruction layout changes |
+| 9 | Recompile all `.rbc` files (`VERSION` is not bumped during development) |
 
 ## Adding a socket probe option
 
@@ -60,7 +60,7 @@ Example: `connect_timeout 5s`.
 | 7 | `session.rs` / `executor.rs` — use value on connect |
 | 8 | `disasm.rs` — show in probe dump |
 | 9 | `docs/RSL_REFERENCE.md` — document |
-| 10 | Bump `VERSION` if layout changes |
+| 10 | Recompile all `.rbc` files if layout changes |
 
 Backward compatibility: old bytecode cannot read new fields—bump version and recompile all stored `.rbc` files.
 
@@ -117,7 +117,7 @@ Types in `crates/ruso-runtime/src/contract.rs` are shared with the compiler via 
 | `OP_REDIS`, `OP_SMTP` | `tcp` + payload |
 | Forking executor per CVE | Parameterized `.rsl` |
 | Raw SQL in scripts | Not applicable—keep I/O in runtime |
-| Breaking `VERSION` without bump | Explicit migration notes |
+| Changing the wire layout silently | Changelog note telling users to recompile |
 
 ## Dependency graph
 

@@ -33,7 +33,11 @@ and a `name` set: metadata plus captured evidence.
 capture), recorded only while the match chain is true.
 
 **Metadata** — the `metadata { }` block describing the finding (name, severity,
-CWE/CVE, CVSS, family, version, …).
+confidence, CWE/CVE, CVSS, family, version, …).
+
+**Confidence** — how sure a check is that a positive result is real
+(`tentative`, `firm`, or `certain`), as opposed to *severity*, which is how bad
+it is if real. Optional, with no default.
 
 **Family** — a single curated structural category (`web`, `database`, `tls`, …);
 the unit for `scan --family`.

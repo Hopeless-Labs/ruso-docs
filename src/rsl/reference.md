@@ -49,6 +49,7 @@ All finding metadata lives in a single `metadata { … }` block at the top of th
 | `description` | `description "…"` |
 | `impact` | `impact "…"` |
 | `severity` | `severity low \| medium \| high \| critical \| info` |
+| `confidence` | `confidence tentative \| firm \| certain` how sure the check is that a positive result is real (see below) |
 | `author` | `author "ruso-lab"` |
 | `cve` | `cve ["CVE-2024-1234", "CVE-2024-5678"]` |
 | `cwe` | `cwe ["CWE-79"]` |
@@ -61,6 +62,16 @@ All finding metadata lives in a single `metadata { … }` block at the top of th
 | `version` | `version "1.2.3"` SemVer string; required at publish time, optional for local validate/compile |
 
 `cve`, `cwe`, `references`, and `tags` stay stored as `Vec<String>` in metadata, findings, and reports. Use `cvss` for vectors and `cvss_score` for scores (e.g. base + temporal). Tags are unconstrained at the RSL level — downstream registries are free to enforce their own slug rules and per-script caps at publish time. `version` is a single optional string; repeated declarations take the last value. The registry rejects publishes without it.
+
+`confidence` vs `severity`: `severity` says how bad the issue is *if* it is real; `confidence` says how sure the check is that it *is* real. Pick the level from how the check proves its claim, not from a feeling:
+
+| Level | The check… | Example |
+|-------|------------|---------|
+| `certain` | proves the issue through the target's behaviour | sends Redis `PING` with no auth and gets `PONG` back |
+| `firm` | sees a strong, specific indicator without exercising the issue | `/.git/config` is served and its body matches `[core]` |
+| `tentative` | infers the issue from an indirect sign, usually a version or banner | a `nginx/1.18.0` banner mapped to a CVE (it may be backport-patched) |
+
+`confidence` is optional and has **no default**: a script that omits it reports no confidence at all, and is never assumed to be `certain`. Only the three words above are accepted (case-insensitive); anything else, such as a number, is a parse error. Repeated declarations take the last value. `ruso scan --min-confidence <level>` runs only the scripts at or above a level — see the [CLI Reference](../cli/reference.md#scan).
 
 `family` vs `tags`: `tags` are many-per-script, free-form discovery labels; `family` is a **single** structural category for "scan everything in this group" selection (à la Nessus/OpenVAS plugin families). The RSL accepts any string and stores the last-declared value; the **registry** enforces a curated set at publish time (currently `auth`, `cloud`, `database`, `dns`, `mail`, `misc`, `network`, `tls`, `web`) and rejects anything outside it. `family` is optional — omit it for uncategorised scripts.
 

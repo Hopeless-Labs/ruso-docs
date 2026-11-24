@@ -35,6 +35,7 @@ When a check matches, `finalize_finding()` builds one `Finding` from metadata pl
 | `name` | `name` |
 | `description`, `impact`, `author` | Optional metadata strings |
 | `severity` | Metadata `severity`, default `info` |
+| `confidence` | Metadata `confidence` → `Option<Confidence>`; `None` when unset (no default) |
 | `cve`, `cwe`, `references`, `cvss`, `cvss_score` | Repeatable RSL lines → `Vec<String>` |
 | `mitigation` | Single free-text line → `Option<String>` (declaring it twice is a compile error) |
 | `evidence` | Source-explicit: `evidence <probe>.body` / `.response` / `.header "<name>"`, each with an optional trailing `regex '…'` |
@@ -204,7 +205,7 @@ At end of `run_bytecode`: `close_sessions()` drops open sockets, then `finalize_
 2. Compile a `.rsl` script and `Executor::from_bytecode` + manual run.  
 3. `format_human` / round-trip `encode` → `decode` for bytecode changes.
 
-Any change to the wire layout bumps `VERSION`, so a mismatched `.rbc` is rejected with a clear `BadVersion` error rather than a cryptic decode failure (see [BYTECODE.md](bytecode.md) for the policy). Recompile stored `.rbc` files after a bump.
+`VERSION` is not bumped while Ruso is in development, so after a change to the wire layout an older `.rbc` fails with a decode error rather than `BadVersion` (see [BYTECODE.md](bytecode.md) for the policy). Recompile stored `.rbc` files after a layout change.
 
 ## IPv6 sockets
 

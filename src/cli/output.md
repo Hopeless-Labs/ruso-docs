@@ -9,11 +9,14 @@ CSV, chosen by the file extension.
 Findings **stream as they're found**, one line each:
 
 ```text
-[CRITICAL] 127.0.0.1  Redis exposed without authentication
+[CRITICAL] 127.0.0.1  Redis exposed without authentication  (certain)
 ```
 
 The `[SEVERITY]` tag is colour-coded (critical = magenta, high = red,
-medium = yellow, low = cyan, info = grey) and the target is bold. With `-v`,
+medium = yellow, low = cyan, info = grey) and the target is bold. The trailing
+`(certain)` is the script's declared
+[`confidence`](../rsl/reference.md#metadata), dimmed; it is left off when the
+script declares none. With `-v`,
 each run instead logs its outcome as it completes: `[OK]`, `[SKIP] … (reason)`,
 or `[ERROR] … (msg)`.
 
@@ -67,6 +70,7 @@ skipped runs are reflected only in the counts — there are no per-run rows.
           "script": "redis_unauth.rsl",
           "name": "Redis exposed without authentication",
           "severity": "critical",
+          "confidence": "certain",
           "description": "…",
           "impact": "…",
           "author": "…",
@@ -100,6 +104,7 @@ finding:
 
 | Field | Source in `.rsl` |
 |-------|-------------------|
+| `confidence` | `confidence tentative \| firm \| certain`; omitted when the script declares none |
 | `cve` / `cwe` / `references` | the matching list literals |
 | `cvss` | repeatable `cvss "…"` vector strings |
 | `cvss_score` | repeatable `cvss_score 9.8` (stored as strings) |
@@ -113,12 +118,12 @@ One row per finding, ordered by target. List fields are joined with ` | `.
 Columns:
 
 ```text
-target, script, severity, finding_name, description, impact, author,
+target, script, severity, confidence, finding_name, description, impact, author,
 cve, cwe, references, cvss, cvss_score, mitigation, version, family,
 tags, evidence
 ```
 
-A scan with no findings produces just the header row. CSV is findings-only — the
+`confidence` is empty for a script that declares none. A scan with no findings produces just the header row. CSV is findings-only — the
 outcome counts live in the JSON `summary` (and the terminal table).
 
 ## Using it in CI
