@@ -317,8 +317,9 @@ private scripts you own.
 | `--json` | Emit the raw `ScriptResponse` shape to stdout. |
 | `--registry <URL>` | Override the registry base URL. |
 
-Human output shows: namespace/name, visibility, description, tags, the
-latest non-yanked version + its download count, copy-paste install
+Human output shows: namespace/name, visibility, description, the latest
+non-yanked version's severity and confidence (when the script declares them),
+tags, the latest non-yanked version + its download count, copy-paste install
 commands, and the full version list with per-version size + download
 count + yank flag.
 

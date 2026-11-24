@@ -208,14 +208,14 @@ Written in order after the header (`MAGIC` + `VERSION`):
 | `name` | optional UTF-8 string |
 | `description` | optional string |
 | `impact` | optional string |
-| `severity` | `u8` tag (0=absent, else 1–5 for low…critical) |
+| `severity` | `u8` presence byte (0=absent, 1=present), then a `u8` tag: 0=low, 1=medium, 2=high, 3=critical, 4=info |
 | `author` | optional string |
 | `cve` | `u32` count + strings |
 | `cwe` | `u32` count + strings |
 | `references` | `u32` count + strings |
 | `cvss` | `u32` count + strings (vector) |
 | `cvss_score` | `u32` count + strings (numeric score) |
-| `mitigation` | `u32` count + strings |
+| `mitigation` | optional UTF-8 string (single free-text note) |
 | `tags` | `u32` count + strings (discovery labels) |
 | `version` | optional UTF-8 string (SemVer, required at publish) |
 | `family` | optional UTF-8 string (single curated category) |
