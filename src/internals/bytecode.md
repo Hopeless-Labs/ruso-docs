@@ -26,7 +26,8 @@ exceeds buffer"). The fix is always the same — recompile it.
 > the new runtime and re-compile the bytecode it serves, otherwise clients on
 > the new build cannot decode what the registry still serves. The local install
 > cache self-heals (an undecodable entry is re-fetched), so once the registry
-> serves recompiled bytecode, clients converge automatically.
+> serves recompiled bytecode, clients converge automatically. An operator
+> triggers that recompile with [`ruso admin recompile`](../cli/reference.md#admin-recompile).
 
 Removing an opcode is *not* a format change as long as the remaining opcode
 numbers are stable and no valid program used the removed one — those byte

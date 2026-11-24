@@ -26,6 +26,7 @@ Binary name: **`ruso`**. Fifteen commands across two groups:
 | `edit` | Update description / visibility of a script you own |
 | `pat list/create/revoke` | Manage personal access tokens |
 | `admin delete` | Hard-delete a version or whole script (admin only, `--yes`) |
+| `admin recompile` | Rebuild every stored version's bytecode from source (admin only, `--yes`) |
 
 Plus: `scan` accepts `--script <ns>/<name>[@<range>]` (single registry ref) **or** `--family <name>` (every installed/published script in a curated family); `exec` accepts the same ref form in `--bytecode`. Refs resolve through the local cache, auto-installing on miss.
 
@@ -286,11 +287,14 @@ ruso search "log4j" --json --per-page 50  # machine-readable
 | Positional `<QUERY>` | Free-text query (matches name + description + tags via tsvector). |
 | `--tag <T>` | Filter by tag. Repeat for AND. |
 | `--severity <S>` | Exact match on the latest version's severity. |
+| `--confidence <tentative\|firm\|certain>` | Exact match on the latest version's declared [`confidence`](../rsl/reference.md#metadata). Scripts that declare none never match. |
 | `--cve <ID>` | Exact match on a CVE in the cached list. |
 | `--namespace <NS>` | Filter by owner username. |
 | `--page <N>` / `--per-page <N>` | Defaults `1` / `20`; `per-page` clamped to `[1, 100]`. |
 | `--json` | Emit a JSON array of hits to stdout (table view by default). |
 | `--registry <URL>` | Override the registry base URL. |
+
+The results table has a `CONFIDENCE` column (`-` when the script declares none).
 
 Anonymous searches see only public scripts; authenticated searches
 also include private scripts owned by the caller. Scripts whose only
@@ -421,6 +425,33 @@ Store this token now — it won't be shown again:
 | `--registry <URL>` | Override the registry base URL. |
 
 Idempotent — already-revoked tokens still return success.
+
+## `admin recompile`
+
+```bash
+ruso admin recompile --yes
+```
+
+Operator-only. Asks the registry to rebuild **every** stored version's
+bytecode and metadata from its stored source, using the compiler the registry
+is built with, and to refresh its search index. Source, version numbers, tags,
+and publish times are not touched.
+
+Run it once after the registry is deployed with a runtime whose bytecode
+layout changed: the `VERSION` byte is not bumped during development, so until
+the stored bytecode is recompiled, current clients cannot decode what the
+registry serves. It also backfills metadata the registry started storing
+later, such as `confidence`.
+
+| Flag | Effect |
+|------|--------|
+| `--yes` | Required acknowledgement. |
+| `--json` | Emit the registry's JSON response instead of the summary. |
+| `--registry <URL>` | Override the registry base URL. |
+
+It prints `recompiled N of M version(s)`. A version whose source the current
+compiler rejects is left as it was and listed as an error, and the command
+exits `1`.
 
 ## Output & reporting
 

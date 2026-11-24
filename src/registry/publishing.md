@@ -56,11 +56,12 @@ publishing, make sure the script passes both the vulnerable and safe cases — s
 
 ## Finding scripts
 
-Free-text search with optional filters (tag, severity, CVE, namespace, family):
+Free-text search with optional filters (tag, severity, confidence, CVE, namespace, family):
 
 ```bash
 ruso search "log4j" --tag rce
 ruso search --family database --severity high
+ruso search --confidence certain          # only behaviour-proven checks
 ```
 
 `ruso info <ns>/<name>` shows a script's versions, tags, and a ready-to-paste
