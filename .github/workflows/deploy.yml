@@ -45,8 +45,13 @@ jobs:
           # The scanner is one workspace, so the two library crates cross-link
           # and share a search index with no ephemeral workspace or [patch] of
           # our own, and the committed lockfile pins every transitive dep.
-          git clone --depth 1 https://github.com/Hopeless-Labs/ruso.git _api
+          # Fetch into `_api` rather than `git clone`: on a cache hit the
+          # "Cache cargo" step has already restored `_api/target`, and clone
+          # refuses a non-empty destination (exit 128).
+          git init -q _api
           cd _api
+          git fetch -q --depth 1 https://github.com/Hopeless-Labs/ruso.git main
+          git checkout -q FETCH_HEAD
           cargo doc --no-deps -p ruso-runtime -p ruso-script --locked
           cd ..
           mkdir -p book/api
